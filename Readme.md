@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
 * Студент: [Иван Московченко](https://up.htmlacademy.ru/univer-nodejs-api/2/user/2438397).
-* Наставник: `Неизвестно`.
+* Наставник: [Владислав Поляков](https://htmlacademy.ru/profile/polrk).
 
 ---
 
