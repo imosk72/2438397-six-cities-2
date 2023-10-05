@@ -7,9 +7,10 @@
     "api",
     "node.js"
   ],
-  "main": "main.js",
+  "main": "./dist/src/main.js",
   "scripts": {
-    "start": "npm run build && node ./dist/main.js",
+    "start": "npm run build && node ./dist/src/main.js",
+    "cli": "./dist/src/cli/cli.js",
     "build": "npm run clean && npm run compile",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
