@@ -1,18 +1,16 @@
-import {importCommand} from "./import.js";
-import {versionCommand} from "./version.js";
-import {helpCommand} from "./help.js";
+import {importCommand} from './import.js';
+import {versionCommand} from './version.js';
+import {helpCommand} from './help.js';
 
 const [, , command, options, ...args] = process.argv;
-if (!options.startsWith("--")) {
+if (!options.startsWith('--')) {
   args.push(options);
 }
 
-if (command === "--import") {
+if (command === '--import') {
   importCommand(options, args);
-}
-else if (command === "--version") {
+} else if (command === '--version') {
   versionCommand();
-}
-else {
+} else {
   helpCommand();
 }
