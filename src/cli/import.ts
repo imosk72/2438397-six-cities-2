@@ -1,8 +1,9 @@
-import {Offer} from "../models/offer";
-
+import chalk from "chalk";
 import fs from "node:fs/promises";
 import { EOL } from "node:os";
 import { resolve } from "node:path";
+
+import {Offer} from "../models/offer";
 
 const KEYS = [
   "title",
@@ -27,7 +28,7 @@ const KEYS = [
 function printHelp(options: string) {
   if (options === "--help") {
     console.log("NAME:\n    \"import\" - Imports data from TSV-file\n");
-    console.log("USAGE:\n    cli.js --import path\n");
+    console.log(`USAGE:\n    ${chalk.bold("cli.js")} --import ${chalk.blue("path")}\n`);
     console.log("ARGUMENTS:\n");
     console.log("    path - The path to the file from which you want to import data in tsv format");
     return;
