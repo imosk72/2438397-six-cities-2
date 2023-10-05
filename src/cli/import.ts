@@ -4,33 +4,14 @@ import { EOL } from "node:os";
 import { resolve } from "node:path";
 
 import {Offer} from "../models/offer";
-
-const KEYS = [
-  "title",
-  "description",
-  "date",
-  "city",
-  "preview",
-  "images",
-  "isPremium",
-  "isFavourite",
-  "rating",
-  "housingType",
-  "roomCount",
-  "guestCount",
-  "cost",
-  "facilities",
-  "author",
-  "commentsCount",
-  "coordinates",
-];
+import {City, Facilities, HousingType, UserType} from "../models/enums";
 
 function printHelp(options: string) {
   if (options === "--help") {
     console.log("NAME:\n    \"import\" - Imports data from TSV-file\n");
     console.log(`USAGE:\n    ${chalk.bold("cli.js")} --import ${chalk.blue("path")}\n`);
     console.log("ARGUMENTS:\n");
-    console.log("    path - The path to the file from which you want to import data in tsv format");
+    console.log(`    ${chalk.bold("cli.js")} - The path to the file from which you want to import data in tsv format`);
     return;
   }
 }
@@ -43,22 +24,56 @@ export async function importCommand(options: string, args: Array<string>) {
 
 
   for (const line of lines) {
-    const values = line.split("\t");
+    const [
+      title,
+      description,
+      date,
+      city,
+      preview,
+      images,
+      premium,
+      favorite,
+      rating,
+      housingType,
+      roomCount,
+      guestCount,
+      facilities,
+      authorName,
+      authorAvatar,
+      authorType,
+      authorEmail,
+      authorPassword,
+      commentsCount,
+      latitude,
+      longitude,
+      cost,
+    ] = line.split("\t");
 
-    const offer = Object.fromEntries(KEYS.map((key, i) => [key, values[i]])) as unknown as Offer;
-    offer.images = (offer.images as unknown as string).split(",") as Offer["images"];
-    offer.facilities = (offer.facilities as unknown as string).split(",") as Offer["facilities"];
-    offer.date = new Date((offer.date as unknown as string));
-    offer.isPremium = (offer.isPremium as unknown as string) === "true";
-    offer.isFavourite = (offer.isFavourite as unknown as string) === "true";
-    offer.rating = parseFloat(offer.rating as unknown as string);
-    offer.roomCount = parseInt(offer.roomCount as unknown as string, 10);
-    offer.guestCount = parseInt(offer.guestCount as unknown as string, 10);
-    offer.cost = parseInt(offer.cost as unknown as string, 10);
-    offer.coordinates = (() => {
-      let coords = (offer.coordinates as unknown as string).split(",");
-      return {latitude: parseFloat(coords[0]), longitude:parseFloat(coords[1])};
-    })();
+    const offer: Offer = {
+      title: title,
+      description: description,
+      date: new Date(date),
+      city: city as unknown as City,
+      preview: preview,
+      images: images.split(','),
+      isPremium: premium as unknown as boolean,
+      isFavourite: favorite as unknown as boolean,
+      rating: parseFloat(rating),
+      housingType: housingType as unknown as HousingType,
+      roomCount: parseInt(roomCount, 10),
+      guestCount: parseInt(guestCount, 10),
+      cost: parseInt(cost, 10),
+      facilities: facilities.split(',').map((x) => x as unknown as Facilities),
+      author: {
+        name: authorName,
+        avatar: authorAvatar,
+        type: authorType as unknown as UserType,
+        email: authorEmail,
+        password: authorPassword,
+      },
+      commentsCount: parseInt(commentsCount, 10),
+      coordinates: {latitude: parseFloat(latitude), longitude: parseFloat(longitude)},
+    }
 
     console.log(JSON.stringify(offer));
   }
