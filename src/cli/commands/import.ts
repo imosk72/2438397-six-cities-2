@@ -1,11 +1,7 @@
 import chalk from 'chalk';
-import fs from 'node:fs/promises';
-import { EOL } from 'node:os';
-import { resolve } from 'node:path';
-
-import {Offer} from '../../models/offer.js';
-import {City, Facilities, HousingType, UserType} from '../../models/enums.js';
 import {ICliCommand} from '../ICliCommand.js';
+import {FileReader} from '../../services/fileService.js';
+import {OfferService} from '../../services/offerService.js';
 
 export class ImportCommand implements ICliCommand {
   public readonly name = 'import';
@@ -18,60 +14,12 @@ export class ImportCommand implements ICliCommand {
   }
 
   public async execute(...parameters: string[]) : Promise<void> {
-    const content = await fs.readFile(resolve(parameters[0]), {encoding: 'utf-8'});
-    const lines = content.split(EOL);
+    const path = parameters[0];
+    const reader = new FileReader(path);
+    const offerService = new OfferService();
 
-    for (const line of lines) {
-      const [
-        title,
-        description,
-        date,
-        city,
-        preview,
-        images,
-        premium,
-        favorite,
-        rating,
-        housingType,
-        roomCount,
-        guestCount,
-        facilities,
-        authorName,
-        authorAvatar,
-        authorType,
-        authorEmail,
-        authorPassword,
-        commentsCount,
-        latitude,
-        longitude,
-        cost,
-      ] = line.split('\t');
-      const offer: Offer = {
-        title: title,
-        description: description,
-        date: new Date(date),
-        city: city as unknown as City,
-        preview: preview,
-        images: images.split(','),
-        isPremium: premium as unknown as boolean,
-        isFavourite: favorite as unknown as boolean,
-        rating: parseFloat(rating),
-        housingType: housingType as unknown as HousingType,
-        roomCount: parseInt(roomCount, 10),
-        guestCount: parseInt(guestCount, 10),
-        cost: parseInt(cost, 10),
-        facilities: facilities.split(',').map((x) => x as unknown as Facilities),
-        author: {
-          name: authorName,
-          avatar: authorAvatar,
-          type: authorType as unknown as UserType,
-          email: authorEmail,
-          password: authorPassword,
-        },
-        commentsCount: parseInt(commentsCount, 10),
-        coordinates: {latitude: parseFloat(latitude), longitude: parseFloat(longitude)},
-      };
-
+    for await (const line of reader.readStrings()) {
+      const offer = offerService.parseOffer(line);
       console.log(JSON.stringify(offer));
     }
   }
