@@ -1,16 +1,12 @@
-import {importCommand} from './import.js';
-import {versionCommand} from './version.js';
-import {helpCommand} from './help.js';
+import {VersionCommand} from './commands/version.js';
+import {HelpCommand} from './commands/help.js';
+import {CliCommandRegistry} from './cliCommandRegistry.js';
+import {ImportCommand} from './commands/import.js';
 
-const [, , command, options, ...args] = process.argv;
-if (!options.startsWith('--')) {
-  args.push(options);
-}
+const registry = new CliCommandRegistry();
 
-if (command === '--import') {
-  importCommand(options, args);
-} else if (command === '--version') {
-  versionCommand();
-} else {
-  helpCommand();
-}
+registry.registerCommand(new VersionCommand());
+registry.registerCommand(new HelpCommand());
+registry.registerCommand(new ImportCommand());
+
+registry.processCommand(process.argv);
