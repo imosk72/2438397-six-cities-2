@@ -13,8 +13,7 @@ export class ImportCommand implements ICliCommand {
     console.log(`    ${chalk.bold('<path>')} - The path to the file from which you want to import data in tsv format`);
   }
 
-  public async execute(...parameters: string[]) : Promise<void> {
-    const path = parameters[0];
+  public async execute(path: string) : Promise<void> {
     const reader = new FileReader(path);
     const offerService = new OfferService();
 

@@ -1,5 +1,7 @@
 import {Offer} from '../models/offer.js';
 import {City, Facilities, HousingType, UserType} from '../models/enums.js';
+import {MockData} from '../models/mockData.js';
+import {generateRandomInt, getRandomItem} from '../utils/random.js';
 
 export class OfferService {
   public parseOffer(line: string): Offer {
@@ -53,5 +55,60 @@ export class OfferService {
       commentsCount: parseInt(commentsCount, 10),
       coordinates: {latitude: parseFloat(latitude), longitude: parseFloat(longitude)},
     };
+  }
+
+  public generateOffer(initialData: MockData): Offer {
+    return {
+      title: getRandomItem<string>(initialData.titles),
+      description: getRandomItem<string>(initialData.descriptions),
+      date: new Date(),
+      city: City.EKATERINBURG,
+      preview: getRandomItem<string>(initialData.images),
+      images: [getRandomItem<string>(initialData.images), getRandomItem<string>(initialData.images)],
+      isPremium: getRandomItem<boolean>([true, false]),
+      isFavourite: getRandomItem<boolean>([true, false]),
+      rating: generateRandomInt(0, 10),
+      housingType: HousingType.HOTEL,
+      roomCount: generateRandomInt(1, 5),
+      guestCount: generateRandomInt(1, 10),
+      cost: generateRandomInt(1, 100500),
+      facilities: [Facilities.BREAKFAST, Facilities.WASHER],
+      author: {
+        name: getRandomItem<string>(initialData.users.names),
+        avatar: getRandomItem<string>(initialData.users.avatars),
+        type: UserType.STANDART,
+        email: getRandomItem<string>(initialData.users.emails),
+        password: getRandomItem<string>(initialData.users.passwords),
+      },
+      commentsCount: generateRandomInt(0, 100),
+      coordinates: {latitude: generateRandomInt(-90, 90), longitude: generateRandomInt(-180, 180)},
+    };
+  }
+
+  public offerToTsvString(offer: Offer): string {
+    return [
+      offer.title,
+      offer.description,
+      offer.date,
+      offer.city,
+      offer.preview,
+      offer.images,
+      offer.isPremium,
+      offer.isFavourite,
+      offer.rating,
+      offer.housingType,
+      offer.roomCount,
+      offer.guestCount,
+      offer.facilities,
+      offer.author.name,
+      offer.author.avatar,
+      offer.author.type,
+      offer.author.email,
+      offer.author.password,
+      offer.commentsCount,
+      offer.coordinates.latitude,
+      offer.coordinates.longitude,
+      offer.cost,
+    ].join('\t');
   }
 }
