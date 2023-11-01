@@ -1,0 +1,52 @@
+{
+  "api": {
+    "titles": [
+      "Дом",
+      "Квартира",
+      "Апартаменты",
+      "Отель",
+      "Хостел"
+    ],
+    "descriptions": [
+      "C садом и современными удобствами",
+      "C закрытой территорией",
+      "Имеется спа-центр",
+      "С бассейном на крыше и видом на море",
+      "С балконами и садом и закрытой территорией",
+      "В центре города с современным дизайном"
+    ],
+    "images": [
+      "image1.jpg",
+      "image2.jpg",
+      "image3.jpg"
+    ],
+    "users": {
+      "names": [
+        "Вася",
+        "Ваня",
+        "Петя",
+        "Катя"
+      ],
+      "avatars": [
+        "avatar1.jpg",
+        "avatar2.jpg",
+        "avatar3.jpg",
+        "avatar4.jpg",
+        "avatar5.jpg"
+      ],
+      "emails": [
+        "example@gmail.com",
+        "example@mail.com",
+        "example@yandex.com"
+      ],
+      "passwords": [
+        "password",
+        "123456",
+        "qwerty",
+        "111111",
+        "abc123",
+        "hackme"
+      ]
+    }
+  }
+}
