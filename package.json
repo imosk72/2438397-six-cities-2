@@ -10,7 +10,7 @@
   "main": "./dist/src/main.js",
   "scripts": {
     "start": "npm run build && node ./dist/src/main.js",
-    "cli": "./dist/src/cli/cli.js",
+    "cli": "./dist/src/main.cli.js",
     "build": "npm run clean && npm run compile",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
@@ -23,6 +23,7 @@
     "@typescript-eslint/parser": "5.46.0",
     "eslint": "8.39.0",
     "eslint-config-htmlacademy": "9.1.1",
+    "pino-pretty": "^9.1.1",
     "rimraf": "3.0.2",
     "ts-node": "10.9.1",
     "typescript": "4.9.5"
@@ -34,8 +35,14 @@
   },
   "dependencies": {
     "chalk": "^5.3.0",
+    "convict": "^6.2.4",
+    "convict-format-with-validator": "^6.2.0",
+    "dotenv": "^16.0.3",
     "got": "^13.0.0",
+    "inversify": "^6.0.1",
     "json-server": "^0.17.1",
+    "pino": "^8.7.0",
+    "reflect-metadata": "^0.1.13",
     "tsx": "^3.14.0"
   }
 }

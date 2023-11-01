@@ -4,14 +4,14 @@ export class CliCommandRegistry {
   private commands: { [propertyName: string]: ICliCommand } = {};
   private defaultCommandName = '--help';
 
-  public processCommand(argv: string[]): void {
+  public async processCommand(argv: string[]): Promise<void> {
     const executableCommand = this.getCommand(this.getCommandName(argv));
     const commandArguments = this.getCommandArguments(argv);
 
     if (commandArguments.length > 0 && commandArguments[0] === '--help') {
-      executableCommand.printHelp();
+      await executableCommand.printHelp();
     } else {
-      executableCommand.execute(...commandArguments);
+      await executableCommand.execute(...commandArguments);
     }
   }
 
