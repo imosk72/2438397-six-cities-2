@@ -3,7 +3,7 @@ import {ILogger} from '../common/logging/ILogger.js';
 import {AppTypes} from './appTypes.js';
 import {ConfigRegistry} from '../common/config/configRegistry.js';
 import {IDbClient} from '../common/db/IDbClient.js';
-import {getMongoConnectionUri} from '../utils/db';
+import {getMongoConnectionUri} from '../utils/db.js';
 
 @injectable()
 export class Application {

@@ -1,4 +1,4 @@
-export enum UserType {
+export enum UserLevel {
   STANDART = 'standart',
   PRO = 'pro',
 }
