@@ -18,6 +18,7 @@ export class HelpCommand implements ICliCommand {
     console.log(`    ${chalk.bold('--help')} - Shows a list of commands`);
     console.log(`    ${chalk.bold('--version')} - Shows a version`);
     console.log(`    ${chalk.bold('import')} - Imports data from TSV-file`);
+    console.log(`    ${chalk.bold('generate')} - Generates TSV-files with offers`);
   }
 }
 

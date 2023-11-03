@@ -62,4 +62,12 @@ export class MongoClient implements IDbClient {
 
     this.logger.info('Database connection closed.');
   }
+
+  public getConnection() : Mongoose {
+    if (!this.isConnected) {
+      this.logger.error('Attempt to get not established connection');
+      throw new Error();
+    }
+    return this.mongooseInstance!;
+  }
 }

@@ -1,43 +1,52 @@
 import { inject, injectable } from 'inversify';
-import { DocumentType, types } from '@typegoose/typegoose';
-import { UserEntity } from '../../models/user/userEntity.js';
-import { UserDto } from '../../models/user/userDto.js';
+import {Model, Schema} from 'mongoose';
+
+import {IDbClient} from "../../common/db/IDbClient";
+import { UserDto } from '../../models/user/userDto';
 import { AppTypes } from '../../application/appTypes.js';
 import { IUserRepository } from './IUserRepository.js';
 import { ILogger } from '../../common/logging/ILogger.js';
 import { ConfigRegistry } from '../../common/config/configRegistry.js';
-import { UserLevel } from '../../models/enums.js';
+import { createSHA256Hash } from '../../utils/hashing.js'
 
 @injectable()
 export class UserRepository implements IUserRepository {
   private readonly logger: ILogger;
   private readonly config: ConfigRegistry;
-  private readonly userModel: types.ModelType<UserEntity>;
+  private readonly UserModel: typeof Model;
+
 
   constructor(
     @inject(AppTypes.LoggerInterface) logger: ILogger,
     @inject(AppTypes.ConfigRegistry) config: ConfigRegistry,
-    @inject(AppTypes.UserModel) userModel: types.ModelType<UserEntity>,
+    @inject(AppTypes.DbClient) dbClient: IDbClient,
+    @inject(AppTypes.UserModelSchema) userModelSchema: Schema,
   ) {
     this.logger = logger;
     this.config = config;
-    this.userModel = userModel;
+    this.UserModel = dbClient.getConnection().model('User', userModelSchema);
   }
 
-  public async create(dto: UserDto): Promise<DocumentType<UserEntity>> {
-    const user = new UserEntity({ ...dto, type: UserLevel.STANDART }, this.config);
-
-    const model = await this.userModel.create(user);
-    this.logger.info(`New user with id ${model.id} created`);
-
+  public async save(dto: UserDto): Promise<UserDto> {
+    const model = await this.UserModel.create(
+      {
+        ...dto,
+        password: createSHA256Hash(dto.password, this.config?.get('SALT')),
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      }
+    );
+    this.logger.info(`New user with id ${model._id} created`);
     return model;
   }
 
-  public async findById(id: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel.findOne({ id });
+  public async findById(id: string): Promise<UserDto | null> {
+    this.logger.info(`Finding user model by id ${id}`);
+    return this.UserModel.findOne({_id: id}).exec();
   }
 
-  public async findByEmail(email: string): Promise<DocumentType<UserEntity> | null> {
-    return this.userModel.findOne({ email });
+  public async findByEmail(email: string): Promise<UserDto | null> {
+    this.logger.info(`Finding user model by email ${email}`);
+    return this.UserModel.findOne({email: email}).exec();
   }
 }

@@ -1,9 +1,7 @@
-import { DocumentType } from '@typegoose/typegoose';
-import { UserDto } from '../../models/user/userDto.js';
-import { UserEntity } from '../../models/user/userEntity.js';
+import { UserDto } from '../../models/user/userDto';
 
 export interface IUserRepository {
-  create(dto: UserDto): Promise<DocumentType<UserEntity>>;
-  findById(id: string): Promise<DocumentType<UserEntity> | null>;
-  findByEmail(email: string): Promise<DocumentType<UserEntity> | null>;
+  save(dto: UserDto): Promise<UserDto>;
+  findById(id: string): Promise<UserDto | null>;
+  findByEmail(email: string): Promise<UserDto | null>;
 }

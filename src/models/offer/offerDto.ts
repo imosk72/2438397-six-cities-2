@@ -1,8 +1,8 @@
 import { City, Facilities, HousingType } from '../enums.js';
-import { UserType } from '../user/userType.js';
 import { Coordinates } from './offerType.js';
 
 export class OfferDto {
+  public id?: string;
   public title!: string;
   public description!: string;
   public date!: Date;
@@ -17,7 +17,7 @@ export class OfferDto {
   public guestCount!: number;
   public cost!: number;
   public facilities!: Array<Facilities>;
-  public author!: UserType;
+  public authorId!: string;
   public commentsCount!: number;
   public coordinates!: Coordinates;
 }
