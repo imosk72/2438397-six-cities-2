@@ -46,5 +46,11 @@ export const applicationConfigSchema = convict({
     env: 'SALT',
     default: '',
   },
+  DEFAULT_PASSWORD: {
+    doc: 'Default user password which will be used if other not provided',
+    format: String,
+    env: 'DEFAULT_PASSWORD',
+    default: '12345678',
+  }
 });
 
