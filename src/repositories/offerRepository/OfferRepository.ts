@@ -1,8 +1,8 @@
 import { inject, injectable } from 'inversify';
 import {Model, Schema} from 'mongoose';
 
-import {IDbClient} from "../../common/db/IDbClient";
-import { OfferDto } from '../../models/offer/offerDto';
+import {IDbClient} from '../../common/db/IDbClient.js';
+import { OfferDto } from '../../models/offer/offerDto.js';
 import { AppTypes } from '../../application/appTypes.js';
 import { ILogger } from '../../common/logging/ILogger.js';
 import {IOfferRepository} from './IOfferRepository.js';

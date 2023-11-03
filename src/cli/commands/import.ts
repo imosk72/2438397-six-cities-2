@@ -2,14 +2,14 @@ import chalk from 'chalk';
 import {ICliCommand} from '../ICliCommand.js';
 import {FileReader} from '../../services/fileService.js';
 import {OfferService} from '../../services/offerService.js';
-import {PinoLogger} from "../../common/logging/pinoLogger";
-import {ConfigRegistry} from "../../common/config/configRegistry";
-import {MongoClient} from "../../common/db/mongoClient";
-import {UserRepository} from "../../repositories/userRepository/UserRepository";
-import {OfferRepository} from "../../repositories/offerRepository/OfferRepository";
-import {OfferModelSchema} from "../../models/offer/offerModelSchema";
-import {UserModelSchema} from "../../models/user/userModelSchema";
-import {applicationConfigSchema} from "../../application/appConfigSchema";
+import {PinoLogger} from '../../common/logging/pinoLogger.js';
+import {ConfigRegistry} from '../../common/config/configRegistry.js';
+import {MongoClient} from '../../common/db/mongoClient.js';
+import {UserRepository} from '../../repositories/userRepository/UserRepository.js';
+import {OfferRepository} from '../../repositories/offerRepository/OfferRepository.js';
+import {OfferModelSchema} from '../../models/offer/offerModelSchema.js';
+import {UserModelSchema} from '../../models/user/userModelSchema.js';
+import {applicationConfigSchema} from '../../application/appConfigSchema.js';
 
 export class ImportCommand implements ICliCommand {
   public readonly name = 'import';
@@ -47,7 +47,7 @@ export class ImportCommand implements ICliCommand {
           ...offer,
           authorId: user.id!,
         }
-      )
+      );
     }
 
     //close db session

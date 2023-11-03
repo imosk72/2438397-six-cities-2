@@ -1,13 +1,13 @@
 import { inject, injectable } from 'inversify';
 import {Model, Schema} from 'mongoose';
 
-import {IDbClient} from "../../common/db/IDbClient";
-import { UserDto } from '../../models/user/userDto';
+import {IDbClient} from '../../common/db/IDbClient.js';
+import { UserDto } from '../../models/user/userDto.js';
 import { AppTypes } from '../../application/appTypes.js';
 import { IUserRepository } from './IUserRepository.js';
 import { ILogger } from '../../common/logging/ILogger.js';
 import { ConfigRegistry } from '../../common/config/configRegistry.js';
-import { createSHA256Hash } from '../../utils/hashing.js'
+import { createSHA256Hash } from '../../utils/hashing.js';
 
 @injectable()
 export class UserRepository implements IUserRepository {

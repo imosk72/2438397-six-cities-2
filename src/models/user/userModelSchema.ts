@@ -1,5 +1,5 @@
-import {UserLevel} from "../enums";
-import {Schema} from "mongoose";
+import {UserLevel} from '../enums.js';
+import {Schema} from 'mongoose';
 
 export const UserModelSchema = new Schema(
   {
@@ -15,4 +15,4 @@ export const UserModelSchema = new Schema(
     createdAt: Date,
     updatedAt: Date,
   }
-)
+);

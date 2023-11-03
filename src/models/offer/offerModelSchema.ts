@@ -1,5 +1,5 @@
-import { City, Facilities, HousingType } from "../enums";
-import { Schema } from "mongoose";
+import { City, Facilities, HousingType } from '../enums.js';
+import { Schema } from 'mongoose';
 
 export const CoordinatesSchema = new Schema(
   {
@@ -39,4 +39,4 @@ export const OfferModelSchema = new Schema(
     createdAt: Date,
     updatedAt: Date,
   }
-)
+);

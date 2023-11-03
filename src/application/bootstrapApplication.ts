@@ -1,4 +1,4 @@
-import {Schema} from "mongoose";
+import {Schema} from 'mongoose';
 import {Container} from 'inversify';
 import {PinoLogger} from '../common/logging/pinoLogger.js';
 import {Application} from './application.js';

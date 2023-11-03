@@ -1,4 +1,4 @@
-import { UserDto } from '../../models/user/userDto';
+import { UserDto } from '../../models/user/userDto.js';
 
 export interface IUserRepository {
   save(dto: UserDto): Promise<UserDto>;

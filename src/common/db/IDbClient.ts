@@ -1,4 +1,4 @@
-import {Mongoose} from "mongoose";
+import {Mongoose} from 'mongoose';
 
 export interface IDbClient {
   connect(uri: string): Promise<void>;
