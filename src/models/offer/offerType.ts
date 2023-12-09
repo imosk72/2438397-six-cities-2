@@ -1,12 +1,12 @@
-import {City, Facilities, HousingType} from './enums.js';
-import {User} from './user.js';
+import {City, Facilities, HousingType} from '../enums.js';
+import {UserType} from '../user/userType.js';
 
 export type Coordinates = {
   latitude: number,
   longitude: number
 }
 
-export type Offer = {
+export type OfferType = {
   title: string;
   description: string;
   date: Date;
@@ -21,7 +21,7 @@ export type Offer = {
   guestCount: number;
   cost: number;
   facilities: Array<Facilities>;
-  author: User;
+  author: UserType;
   commentsCount: number;
   coordinates: Coordinates;
 }

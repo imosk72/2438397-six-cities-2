@@ -1,10 +1,10 @@
-import {Offer} from '../models/offer.js';
-import {City, Facilities, HousingType, UserType} from '../models/enums.js';
+import {OfferType} from '../models/offer/offerType.js';
+import {City, Facilities, HousingType, UserLevel} from '../models/enums.js';
 import {MockData} from '../models/mockData.js';
 import {generateRandomInt, getRandomItem} from '../utils/random.js';
 
 export class OfferService {
-  public parseOffer(line: string): Offer {
+  public parseOffer(line: string): OfferType {
     const [
       title,
       description,
@@ -48,7 +48,7 @@ export class OfferService {
       author: {
         name: authorName,
         avatar: authorAvatar,
-        type: authorType as unknown as UserType,
+        type: authorType as unknown as UserLevel,
         email: authorEmail,
         password: authorPassword,
       },
@@ -57,7 +57,7 @@ export class OfferService {
     };
   }
 
-  public generateOffer(initialData: MockData): Offer {
+  public generateOffer(initialData: MockData): OfferType {
     return {
       title: getRandomItem<string>(initialData.titles),
       description: getRandomItem<string>(initialData.descriptions),
@@ -76,7 +76,7 @@ export class OfferService {
       author: {
         name: getRandomItem<string>(initialData.users.names),
         avatar: getRandomItem<string>(initialData.users.avatars),
-        type: UserType.STANDART,
+        type: UserLevel.STANDART,
         email: getRandomItem<string>(initialData.users.emails),
         password: getRandomItem<string>(initialData.users.passwords),
       },
@@ -85,7 +85,7 @@ export class OfferService {
     };
   }
 
-  public offerToTsvString(offer: Offer): string {
+  public offerToTsvString(offer: OfferType): string {
     return [
       offer.title,
       offer.description,
