@@ -246,7 +246,7 @@ paths:
   /user:
     get:
       tags:
-        - User
+        - Users
       summary: Gets the current user
       responses:
         200:
@@ -261,7 +261,7 @@ paths:
   /user/login:
     post:
       tags:
-        - User
+        - Users
       summary: Login a user
       requestBody:
         required: true
@@ -290,7 +290,7 @@ paths:
   /user/logout:
     post:
       tags:
-        - User
+        - Users
       summary: Logout the current user
       responses:
         204:
@@ -301,7 +301,7 @@ paths:
   /user/register:
     post:
       tags:
-        - User
+        - Users
       summary: Register a new user
       requestBody:
         required: true
