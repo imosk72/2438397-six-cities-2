@@ -20,4 +20,5 @@ export class OfferDto {
   public authorId!: string;
   public commentsCount!: number;
   public coordinates!: Coordinates;
+  public commentsTotalRating!: number;
 }

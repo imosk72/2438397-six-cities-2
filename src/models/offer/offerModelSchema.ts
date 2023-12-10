@@ -38,5 +38,6 @@ export const OfferModelSchema = new Schema(
     coordinates: CoordinatesSchema,
     createdAt: Date,
     updatedAt: Date,
+    commentsTotalRating: Number,
   }
 );

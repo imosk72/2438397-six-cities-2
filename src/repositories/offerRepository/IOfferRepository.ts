@@ -4,4 +4,6 @@ export interface IOfferRepository {
   save(dto: OfferDto): Promise<OfferDto>;
 
   findById(id: string): Promise<OfferDto | null>;
+
+  updateRating(id: string, rating: number): Promise<OfferDto | null>;
 }
