@@ -12,11 +12,11 @@ import {IUserRepository} from '../repositories/userRepository/IUserRepository.js
 import {UserRepository} from '../repositories/userRepository/UserRepository.js';
 import {UserModelSchema} from '../models/user/userModelSchema.js';
 import {OfferModelSchema} from '../models/offer/offerModelSchema.js';
-import {CommentModelSchema} from '../models/comment/commentModelSchema';
+import {CommentModelSchema} from '../models/comment/commentModelSchema.js';
 import {AppTypes} from './appTypes.js';
 import {applicationConfigSchema} from './appConfigSchema.js';
-import {ICommentRepository} from '../repositories/commentRepository/ICommentRepository';
-import {CommentRepository} from "../repositories/commentRepository/CommentRepository";
+import {ICommentRepository} from '../repositories/commentRepository/ICommentRepository.js';
+import {CommentRepository} from '../repositories/commentRepository/CommentRepository.js';
 
 export async function bootstrapApplication() {
   const container = new Container();
