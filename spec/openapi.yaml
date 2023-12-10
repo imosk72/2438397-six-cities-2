@@ -1,0 +1,493 @@
+openapi: 3.0.0
+info:
+  title: API Six Cities
+  version: 1.0
+
+paths:
+  /offers:
+    get:
+      tags:
+        - Offers
+      summary: Gets a list of offers
+      description: Retrieve a list of offers with optional pagination.
+      parameters:
+        - name: limit
+          in: query
+          description: The maximum number of offers to return (optional)
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: The number of offers to skip (optional)
+          required: false
+          schema:
+            type: integer
+        - name: isPremium
+          in: query
+          description: Filter offers by premium status (optional)
+          required: false
+          schema:
+            type: boolean
+        - name: isFavourite
+          in: query
+          description: Filter offers by favorite status (optional)
+          required: false
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Offer'
+        400:
+          description: Validation Error
+        401:
+          description: Unauthorized
+
+    post:
+      tags:
+        - Offers
+      summary: Creates a new offer
+      description: Creates a new offer and returns offer model.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Offer'
+      responses:
+        201:
+          description: Offer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        400:
+          description: Validation Error
+        401:
+          description: Unauthorized
+
+  /offers/{offerId}:
+    parameters:
+      - name: offerId
+        in: path
+        required: true
+        description: The ID of the offer to manipulate
+        schema:
+          type: string
+    get:
+      tags:
+        - Offers
+      summary: Get an offer by ID
+      description: Retrieve an offer by its unique ID.
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        404:
+          description: Offer not found
+        401:
+          description: Unauthorized
+
+    put:
+      tags:
+        - Offers
+      summary: Update an offer by ID
+      description: Update an offer by its unique ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Offer'
+      responses:
+        200:
+          description: Offer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        404:
+          description: Offer not found
+        400:
+          description: Validation Error
+        401:
+          description: Unauthorized
+
+    delete:
+      tags:
+        - Offers
+      summary: Delete an offer by ID
+      description: Delete an offer by its unique ID.
+      responses:
+        204:
+          description: Offer deleted successfully
+        404:
+          description: Offer not found
+        401:
+          description: Unauthorized
+
+  /offers/{offerId}/comments:
+    get:
+      tags:
+        - Comments
+      summary: Get comments for an offer
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: The ID of the offer to retrieve comments for
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: The maximum number of comments to return (optional)
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: The number of comments to skip (optional)
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        404:
+          description: Offer not found
+        401:
+          description: Unauthorized
+
+    post:
+      tags:
+        - Favourites
+      summary: Create a new comment for an offer
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: The ID of the offer to create a comment for
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        201:
+          description: Comment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        400:
+          description: Validation Error
+        401:
+          description: Unauthorized
+
+  /offers/{offerId}/favorites:
+    post:
+      tags:
+        - Favourites
+      summary: Adds an offer to favorites
+      description: Adds an offer to the user's list of favorites.
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: The ID of the offer to add to favorites
+          schema:
+            type: string
+      responses:
+        201:
+          description: Offer added to favorites successfully
+        404:
+          description: Offer not found
+        401:
+          description: Unauthorized
+
+    delete:
+      tags:
+        - Offers
+      summary: Remove an offer from favorites
+      description: Remove an offer from the user's list of favorites.
+      parameters:
+        - name: offerId
+          in: path
+          required: true
+          description: The ID of the offer to remove from favorites
+          schema:
+            type: string
+      responses:
+        204:
+          description: Offer removed from favorites successfully
+        404:
+          description: Offer not found
+        401:
+          description: Unauthorized
+
+  /user:
+    get:
+      tags:
+        - User
+      summary: Gets the current user
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: Unauthorized
+
+  /user/login:
+    post:
+      tags:
+        - User
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        200:
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Validation Error
+
+  /user/logout:
+    post:
+      tags:
+        - User
+      summary: Logout the current user
+      responses:
+        204:
+          description: User logged out successfully
+        401:
+          description: Unauthorized
+
+  /user/register:
+    post:
+      tags:
+        - User
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                avatar:
+                  type: string
+                password:
+                  type: string
+                type:
+                  $ref: '#/components/schemas/UserType'
+              required:
+                - name
+                - email
+                - password
+                - type
+      responses:
+        201:
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: Validation Error
+
+
+tags:
+  - name: Offers
+    description: Endpoints related to offers.
+
+  - name: Comments
+    description: Endpoints related to comments on offers.
+
+  - name: Users
+    description: Endpoints related to user management, login, and registration.
+
+  - name: Favourites
+    description: Endpoints related to managing favorite offers.
+
+components:
+  schemas:
+    UserType:
+      type: string
+      enum:
+        - standart
+        - pro
+
+    City:
+      type: string
+      enum:
+        - Ekaterinburg
+        - Tyumen
+        - Tambov
+        - Magadan
+        - Vorkuta
+        - Moscow
+
+    HousingType:
+      type: string
+      enum:
+        - apartment
+        - house
+        - room
+        - hotel
+
+    Facilities:
+      type: string
+      enum:
+        - Breakfast
+        - Air conditioning
+        - Laptop friendly workspace
+        - Baby seat
+        - Washer
+        - Towels
+        - Fridge
+
+    Coordinates:
+      type: object
+      properties:
+        latitude:
+          type: number
+        longitude:
+          type: number
+      required:
+        - latitude
+        - longitude
+
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        avatar:
+          type: string
+        type:
+          $ref: '#/components/schemas/UserType'
+      required:
+        - name
+        - email
+        - type
+
+    Offer:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        publicationDate:
+          type: string
+          format: date-time
+        city:
+          $ref: '#/components/schemas/City'
+        preview:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        isPremium:
+          type: boolean
+        isFavourite:
+          type: boolean
+        rating:
+          type: number
+        housingType:
+          $ref: '#/components/schemas/HousingType'
+        roomCount:
+          type: number
+        guestCount:
+          type: number
+        cost:
+          type: number
+        facilities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Facilities'
+        author:
+          $ref: '#/components/schemas/User'
+        commentsCount:
+          type: number
+        coordinates:
+          $ref: '#/components/schemas/Coordinates'
+      required:
+        - title
+        - description
+        - publicationDate
+        - city
+        - preview
+        - images
+        - isPremium
+        - isFavourite
+        - rating
+        - housingType
+        - roomCount
+        - guestCount
+        - cost
+        - facilities
+        - author
+        - commentsCount
+        - coordinates
+
+    Comment:
+      type: object
+      properties:
+        text:
+          type: string
+        publicationDate:
+          type: string
+          format: date-time
+        rating:
+          type: number
+        author:
+          $ref: '#/components/schemas/User'
+      required:
+        - text
+        - publicationDate
+        - rating
+        - author
