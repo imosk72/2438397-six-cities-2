@@ -10,7 +10,7 @@ import {IOfferRepository} from './IOfferRepository.js';
 @injectable()
 export class OfferRepository implements IOfferRepository {
   private readonly logger: ILogger;
-  private readonly UserModel: typeof Model;
+  private readonly OfferModel: typeof Model;
 
 
   constructor(
@@ -19,15 +19,17 @@ export class OfferRepository implements IOfferRepository {
     @inject(AppTypes.OfferModelSchema) offerModelSchema: Schema,
   ) {
     this.logger = logger;
-    this.UserModel = dbClient.getConnection().model('Offer', offerModelSchema);
+    this.OfferModel = dbClient.getConnection().model('Offer', offerModelSchema);
   }
 
   public async save(dto: OfferDto): Promise<OfferDto> {
-    const model = await this.UserModel.create(
+    const model = await this.OfferModel.create(
       {
         ...dto,
         createdAt: Date.now(),
         updatedAt: Date.now(),
+        commentsCount: 0,
+        commentsTotalRating: 0,
       }
     );
     this.logger.info(`New offer with id ${model._id} created`);
@@ -36,6 +38,15 @@ export class OfferRepository implements IOfferRepository {
 
   public async findById(id: string): Promise<OfferDto | null> {
     this.logger.info(`Finding offer model by id ${id}`);
-    return this.UserModel.findOne({_id: id}).exec();
+    return this.OfferModel.findOne({_id: id}).exec();
+  }
+
+  public async updateRating(id: string, rating: number): Promise<OfferDto | null> {
+    this.logger.info(`Try to add ${rating} amount to offer ${id}`);
+    return this.OfferModel
+      .findByIdAndUpdate(id, {
+        $inc: {commentCount: 1, commentsTotalRating: rating},
+      })
+      .exec();
   }
 }
