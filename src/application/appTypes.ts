@@ -9,4 +9,5 @@ export const AppTypes = {
   UserModelSchema: Symbol.for('UserModelSchema'),
   OfferModelSchema: Symbol.for('OfferModelSchema'),
   CommentModelSchema: Symbol.for('CommentModelSchema'),
+  ExceptionFilterInterface: Symbol.for('ExceptionFilterInterface'),
 } as const;
