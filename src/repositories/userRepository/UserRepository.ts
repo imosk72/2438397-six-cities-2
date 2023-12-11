@@ -8,6 +8,7 @@ import { IUserRepository } from './IUserRepository.js';
 import { ILogger } from '../../common/logging/ILogger.js';
 import { ConfigRegistry } from '../../common/config/configRegistry.js';
 import { createSHA256Hash } from '../../utils/hashing.js';
+import { OfferDto } from '../../models/offer/offerDto.js';
 
 @injectable()
 export class UserRepository implements IUserRepository {
@@ -48,5 +49,22 @@ export class UserRepository implements IUserRepository {
   public async findByEmail(email: string): Promise<UserDto | null> {
     this.logger.info(`Finding user model by email ${email}`);
     return this.UserModel.findOne({email: email}).exec();
+  }
+
+  public async addToFavoriteOffer(userId: string, offerId: string): Promise<void> {
+    await this.UserModel.findByIdAndUpdate(userId, { $push: { favorite: offerId }, new: true }).exec();
+  }
+
+  public async getFavourites(userId: string): Promise<OfferDto[]> {
+    const offers = await this.UserModel.findById(userId).select('favorite');
+    if (!offers) {
+      return [];
+    }
+
+    return this.UserModel.find({ _id: { $in: offers } }).populate('offerId');
+  }
+
+  public async removeFavouriteOffer(userId: string, offerId: string): Promise<void> {
+    await this.UserModel.findByIdAndUpdate(userId, { $pull: { favorite: offerId }, new: true });
   }
 }
