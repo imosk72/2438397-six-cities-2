@@ -7,6 +7,9 @@ import { AppTypes } from '../../application/appTypes.js';
 import { ILogger } from '../../common/logging/ILogger.js';
 import {IOfferRepository} from './IOfferRepository.js';
 
+const MAX_OFFERS_LIMIT = 20;
+const SORT_DESC = -1;
+
 @injectable()
 export class OfferRepository implements IOfferRepository {
   private readonly logger: ILogger;
@@ -48,5 +51,26 @@ export class OfferRepository implements IOfferRepository {
         $inc: {commentCount: 1, commentsTotalRating: rating},
       })
       .exec();
+  }
+
+  public async deleteById(id: string): Promise<void> {
+    await this.OfferModel.findByIdAndDelete(id).exec();
+  }
+
+  public async findAny(limit: number): Promise<OfferDto[] | null> {
+    limit = limit ?? MAX_OFFERS_LIMIT;
+    return this.OfferModel.find().sort({ createdAt: SORT_DESC }).limit(limit).exec();
+  }
+
+  public async findPremiumByCity(city: string): Promise<OfferDto[] | null> {
+    return await this.OfferModel
+      .find({ city: city, isPremium: true })
+      .sort({ createdAt: SORT_DESC })
+      .limit(MAX_OFFERS_LIMIT)
+      .exec();
+  }
+
+  public async updateById(id: string, dto: OfferDto): Promise<void> {
+    await this.OfferModel.findByIdAndUpdate(id, dto, { new: true }).exec();
   }
 }

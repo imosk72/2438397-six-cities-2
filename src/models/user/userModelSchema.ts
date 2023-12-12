@@ -14,5 +14,6 @@ export const UserModelSchema = new Schema(
     },
     createdAt: Date,
     updatedAt: Date,
+    favorite: [String],
   }
 );
