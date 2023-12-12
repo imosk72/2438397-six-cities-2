@@ -5,85 +5,85 @@ import { Coordinates } from '../models/offer/offerType.js';
 
 export class FullOfferRdo {
   @Expose()
-  name!: string;
+    name!: string;
 
   @Expose()
-  description!: string;
+    description!: string;
 
   @Expose()
-  publicationDate!: Date;
+    publicationDate!: Date;
 
   @Expose()
-  city!: City;
+    city!: City;
 
   @Expose()
-  previewImage!: string;
+    previewImage!: string;
 
   @Expose()
-  images!: string[];
+    images!: string[];
 
   @Expose()
-  premium!: boolean;
+    premium!: boolean;
 
   @Expose()
-  favorite = true;
+    favorite = true;
 
   @Expose()
-  rating!: number;
+    rating!: number;
 
   @Expose()
-  housingType!: HousingType;
+    housingType!: HousingType;
 
   @Expose()
-  roomCount!: number;
+    roomCount!: number;
 
   @Expose()
-  guestCount!: number;
+    guestCount!: number;
 
   @Expose()
-  cost!: number;
+    cost!: number;
 
   @Expose()
-  facilities!: Facilities[];
+    facilities!: Facilities[];
 
   @Expose()
-  offerAuthor!: UserType;
+    offerAuthor!: UserType;
 
   @Expose()
-  commentsCount!: number;
+    commentsCount!: number;
 
   @Expose()
-  coordinates!: Coordinates;
+    coordinates!: Coordinates;
 }
 
 export class OfferRdo {
   @Expose()
-  name!: string;
+    name!: string;
 
   @Expose()
-  publicationDate!: Date;
+    publicationDate!: Date;
 
   @Expose()
-  city!: City;
+    city!: City;
 
   @Expose()
-  previewImage!: string;
+    previewImage!: string;
 
   @Expose()
-  premium!: boolean;
+    premium!: boolean;
 
   @Expose()
-  favorite!: boolean;
+    favorite!: boolean;
 
   @Expose()
-  rating!: number;
+    rating!: number;
 
   @Expose()
-  housingType!: HousingType;
+    housingType!: HousingType;
 
   @Expose()
-  cost!: number;
+    cost!: number;
 
   @Expose()
-  commentsCount!: number;
+    commentsCount!: number;
 }

@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import express, {Express} from "express";
+import express, {Express} from 'express';
 
 import {ILogger} from '../common/logging/ILogger.js';
 import {AppTypes} from './appTypes.js';

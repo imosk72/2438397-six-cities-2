@@ -4,7 +4,7 @@ import { Response, Router } from 'express';
 import { IController } from './IController.js';
 import { Route } from '../route.js';
 import { ILogger } from '../../logging/ILogger.js';
-import {AppTypes} from "../../../application/appTypes";
+import { AppTypes } from '../../../application/appTypes.js';
 
 const DEFAULT_CONTENT_TYPE = 'application/json';
 
@@ -30,6 +30,7 @@ export abstract class RestController implements IController {
   public ok<T>(response: Response, data: T): void {
     this.send(response, StatusCodes.OK, data);
   }
+
   public created<T>(response: Response, data: T): void {
     this.send(response, StatusCodes.CREATED, data);
   }

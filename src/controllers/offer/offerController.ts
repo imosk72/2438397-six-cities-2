@@ -29,6 +29,7 @@ export class OfferController extends RestController {
     this.addRoute({ path: '/:offerId', method: HttpMethod.Delete, handler: this.delete });
     this.addRoute({ path: '/premium/:city', method: HttpMethod.Get, handler: this.getPremium });
   }
+
   public async index({ params }: Request<Record<string, unknown>>, response: Response): Promise<void> {
     const limit = params.limit ? parseInt(`${params.limit}`, 10) : 20;
     const offers = await this.offerRepository.findAny(limit);
