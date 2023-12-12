@@ -17,6 +17,10 @@ import {AppTypes} from './appTypes.js';
 import {applicationConfigSchema} from './appConfigSchema.js';
 import {ICommentRepository} from '../repositories/commentRepository/ICommentRepository.js';
 import {CommentRepository} from '../repositories/commentRepository/CommentRepository.js';
+import {UserController} from '../controllers/user/userController.js';
+import {OfferController} from '../controllers/offer/offerController.js';
+import {IExceptionFilter} from '../common/httpServer/exceptions/IExceptionFilter.js';
+import {ExceptionFilter} from '../common/httpServer/exceptions/exceptionFilter.js';
 
 export async function bootstrapApplication() {
   const container = new Container();
@@ -32,6 +36,9 @@ export async function bootstrapApplication() {
   container.bind<IUserRepository>(AppTypes.UserRepository).to(UserRepository).inSingletonScope();
   container.bind<ICommentRepository>(AppTypes.CommentRepository).to(CommentRepository).inSingletonScope();
   container.bind<Application>(AppTypes.Application).to(Application).inSingletonScope();
+  container.bind<IExceptionFilter>(AppTypes.ExceptionFilter).to(ExceptionFilter).inSingletonScope();
+  container.bind<UserController>(AppTypes.UserController).to(UserController).inSingletonScope();
+  container.bind<OfferController>(AppTypes.OfferController).to(OfferController).inSingletonScope();
 
   const application = container.get<Application>(AppTypes.Application);
   await application.init();

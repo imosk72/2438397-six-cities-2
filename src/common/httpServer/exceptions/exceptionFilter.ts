@@ -7,7 +7,7 @@ import { ILogger } from '../../logging/ILogger.js';
 import { AppTypes } from '../../../application/appTypes.js';
 
 @injectable()
-export default class ExceptionFilter implements IExceptionFilter {
+export class ExceptionFilter implements IExceptionFilter {
   private readonly logger: ILogger;
 
   constructor(@inject(AppTypes.LoggerInterface) logger: ILogger) {
