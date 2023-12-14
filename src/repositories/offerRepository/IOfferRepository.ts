@@ -1,6 +1,7 @@
+import { IEntityExistsRepository } from '../../common/repository/IEntityExistsRepository.js';
 import { OfferDto } from '../../models/offer/offerDto.js';
 
-export interface IOfferRepository {
+export interface IOfferRepository extends IEntityExistsRepository {
   save(dto: OfferDto): Promise<OfferDto>;
 
   findById(id: string): Promise<OfferDto | null>;

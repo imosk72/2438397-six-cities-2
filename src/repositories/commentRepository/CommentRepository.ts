@@ -36,4 +36,8 @@ export class CommentRepository implements ICommentRepository {
     this.logger.info(`Finding comment model by id ${id}`);
     return this.CommentModel.findOne({_id: id}).exec();
   }
+
+  public async exists(id: string): Promise<boolean> {
+    return await this.findById(id) !== null;
+  }
 }
