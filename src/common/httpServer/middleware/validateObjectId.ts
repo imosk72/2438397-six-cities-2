@@ -13,7 +13,7 @@ export class ValidateObjectIdMiddleware implements IMiddleware {
     this.param = param;
   }
 
-  public execute({ params }: Request, _res: Response, next: NextFunction): void {
+  public execute({ params }: Request, _response: Response, next: NextFunction): void {
     const objectId = params[this.param];
 
     if (Types.ObjectId.isValid(objectId)) {

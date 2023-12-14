@@ -10,6 +10,7 @@ import {ICommentRepository} from '../../repositories/commentRepository/ICommentR
 import {CommentDto} from '../../models/comment/commentDto.js';
 import {IsDocumentExistsMiddleware} from '../../common/httpServer/middleware/isDocumentExists.js';
 import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto.js';
+import {PrivateRouteMiddleware} from '../../common/httpServer/middleware/authentication.js';
 
 @injectable()
 export class CommentController extends RestController {
@@ -27,14 +28,15 @@ export class CommentController extends RestController {
       method: HttpMethod.Post,
       handler: this.create,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateDtoMiddleware(CommentDto),
         new IsDocumentExistsMiddleware(this.commentsRepository, 'Comment', 'id'),
       ],
     });
   }
 
-  public async create({ body }: Request<object, object, CommentDto>, response: Response): Promise<void> {
-    const result = await this.commentsRepository.save(body);
+  public async create({ body, user }: Request<object, object, CommentDto>, response: Response): Promise<void> {
+    const result = await this.commentsRepository.save({...body, userId: user.id});
     this.created(response, plainToInstance(CommentDto, result, { excludeExtraneousValues: true }));
   }
 }

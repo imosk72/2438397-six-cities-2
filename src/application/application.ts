@@ -9,6 +9,7 @@ import {getMongoConnectionUri} from '../utils/db.js';
 import {IExceptionFilter} from '../common/httpServer/exceptions/IExceptionFilter.js';
 import {UserController} from '../controllers/user/userController.js';
 import {OfferController} from '../controllers/offer/offerController.js';
+import {AuthenticateMiddleware} from '../common/httpServer/middleware/authentication.js';
 
 @injectable()
 export class Application {
@@ -78,6 +79,8 @@ export class Application {
     this.logger.info('Initializing middlewares');
 
     this.server.use(express.json());
+    const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'));
+    this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
 
     this.logger.info('Middlewares initialized');
   }

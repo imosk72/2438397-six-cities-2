@@ -10,3 +10,14 @@ export class UserRdo {
   @Expose()
   public avatar!: string;
 }
+
+export class LoginUserRdo {
+  @Expose()
+  public token!: string;
+
+  @Expose()
+  public refreshToken!: string;
+
+  @Expose()
+  public email!: string;
+}

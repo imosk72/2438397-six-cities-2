@@ -11,12 +11,14 @@ import { HttpError } from '../../common/httpServer/exceptions/httpError.js';
 import { IUserRepository } from '../../repositories/userRepository/IUserRepository.js';
 import { UserDto, LoginUserDto } from '../../models/user/userDto.js';
 import { OfferDto } from '../../models/offer/offerDto.js';
-import {IsDocumentExistsMiddleware} from '../../common/httpServer/middleware/isDocumentExists.js';
-import {IOfferRepository} from '../../repositories/offerRepository/IOfferRepository.js';
-import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto.js';
-import {ValidateObjectIdMiddleware} from '../../common/httpServer/middleware/validateObjectId.js';
-import {UploadFileMiddleware} from '../../common/httpServer/middleware/uploadFile.js';
-import {ConfigRegistry} from '../../common/config/configRegistry.js';
+import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/isDocumentExists.js';
+import { IOfferRepository } from '../../repositories/offerRepository/IOfferRepository.js';
+import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validateDto.js';
+import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validateObjectId.js';
+import { UploadFileMiddleware } from '../../common/httpServer/middleware/uploadFile.js';
+import { ConfigRegistry } from '../../common/config/configRegistry.js';
+import { PrivateRouteMiddleware } from '../../common/httpServer/middleware/authentication.js';
+import { LoginUserRdo } from '../../rdo/userRdo.js';
 
 @injectable()
 export class UserController extends RestController {
@@ -41,8 +43,17 @@ export class UserController extends RestController {
       handler: this.register,
       middlewares: [new ValidateDtoMiddleware(UserDto)]
     });
-    this.addRoute({path: '/login', method: HttpMethod.Post, handler: this.login});
-    this.addRoute({path: '/logout', method: HttpMethod.Post, handler: this.logout});
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuthenticate,
+    });
+    this.addRoute({
+      path: '/logout',
+      method: HttpMethod.Post,
+      handler: this.logout,
+      middlewares: [new PrivateRouteMiddleware()],
+    });
     this.addRoute({
       path: '/favorite/:offerId',
       method: HttpMethod.Post,
@@ -87,8 +98,14 @@ export class UserController extends RestController {
     throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', 'UserController');
   }
 
-  public async logout(_request: Request, _response: Response): Promise<void> {
-    throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', 'UserController');
+  public async logout(request: Request, response: Response): Promise<void> {
+    const [, token] = String(request.headers.authorization?.split(' '));
+
+    if (!request.user) {
+      throw new HttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized', 'UserController');
+    }
+
+    this.noContent(response, { token });
   }
 
   public async getFavorite(
@@ -118,5 +135,14 @@ export class UserController extends RestController {
     this.created(response, {
       filepath: request.file?.path,
     });
+  }
+
+  public async checkAuthenticate({ user: { email } }: Request, res: Response) {
+    const foundedUser = await this.userRepository.findByEmail(email);
+
+    if (!foundedUser) {
+      throw new HttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized', 'UserController');
+    }
+    this.ok(res, plainToInstance(LoginUserRdo, foundedUser, { excludeExtraneousValues: true }));
   }
 }
