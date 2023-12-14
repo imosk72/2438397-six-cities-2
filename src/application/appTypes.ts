@@ -12,4 +12,5 @@ export const AppTypes = {
   ExceptionFilter: Symbol.for('ExceptionFilter'),
   UserController: Symbol.for('UserController'),
   OfferController: Symbol.for('OfferController'),
+  CommentsController: Symbol.for('CommentsController'),
 } as const;

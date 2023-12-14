@@ -11,22 +11,39 @@ import { HttpError } from '../../common/httpServer/exceptions/httpError.js';
 import { IUserRepository } from '../../repositories/userRepository/IUserRepository.js';
 import { UserDto, LoginUserDto } from '../../models/user/userDto.js';
 import { OfferDto } from '../../models/offer/offerDto.js';
+import {IsDocumentExistsMiddleware} from '../../common/httpServer/middleware/isDocumentExists.js';
+import {IOfferRepository} from '../../repositories/offerRepository/IOfferRepository.js';
+import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto.js';
 
 @injectable()
 export class UserController extends RestController {
   private readonly userRepository: IUserRepository;
+  private readonly offerRepository: IOfferRepository;
+
 
   constructor (
     @inject(AppTypes.LoggerInterface) logger: ILogger,
     @inject(AppTypes.UserRepository) userRepository: IUserRepository,
+    @inject(AppTypes.UserRepository) offerRepository: IOfferRepository,
   ) {
     super(logger);
     this.userRepository = userRepository;
+    this.offerRepository = offerRepository;
 
-    this.addRoute({path: '/register', method: HttpMethod.Get, handler: this.register});
+    this.addRoute({
+      path: '/register',
+      method: HttpMethod.Get,
+      handler: this.register,
+      middlewares: [new ValidateDtoMiddleware(UserDto)]
+    });
     this.addRoute({path: '/login', method: HttpMethod.Post, handler: this.login});
     this.addRoute({path: '/logout', method: HttpMethod.Post, handler: this.logout});
-    this.addRoute({path: '/favorite/:offerId', method: HttpMethod.Post, handler: this.addFavorite});
+    this.addRoute({
+      path: '/favorite/:offerId',
+      method: HttpMethod.Post,
+      handler: this.addFavorite,
+      middlewares: [new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'id'),]
+    });
     this.addRoute({path: '/favorite/:offerId', method: HttpMethod.Delete, handler: this.deleteFavorite});
     this.addRoute({path: '/favorite', method: HttpMethod.Get, handler: this.getFavorite});
   }

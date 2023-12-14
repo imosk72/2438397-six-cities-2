@@ -73,4 +73,8 @@ export class OfferRepository implements IOfferRepository {
   public async updateById(id: string, dto: OfferDto): Promise<void> {
     await this.OfferModel.findByIdAndUpdate(id, dto, { new: true }).exec();
   }
+
+  public async exists(id: string): Promise<boolean> {
+    return await this.findById(id) !== null;
+  }
 }

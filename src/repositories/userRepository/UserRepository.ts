@@ -67,4 +67,8 @@ export class UserRepository implements IUserRepository {
   public async removeFavouriteOffer(userId: string, offerId: string): Promise<void> {
     await this.UserModel.findByIdAndUpdate(userId, { $pull: { favorite: offerId }, new: true });
   }
+
+  public async exists(id: string): Promise<boolean> {
+    return await this.findById(id) !== null;
+  }
 }
