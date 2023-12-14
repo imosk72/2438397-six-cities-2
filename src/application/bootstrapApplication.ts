@@ -19,6 +19,7 @@ import {ICommentRepository} from '../repositories/commentRepository/ICommentRepo
 import {CommentRepository} from '../repositories/commentRepository/CommentRepository.js';
 import {UserController} from '../controllers/user/userController.js';
 import {OfferController} from '../controllers/offer/offerController.js';
+import {CommentController} from '../controllers/comments/commentController.js'
 import {IExceptionFilter} from '../common/httpServer/exceptions/IExceptionFilter.js';
 import {ExceptionFilter} from '../common/httpServer/exceptions/exceptionFilter.js';
 
@@ -39,6 +40,7 @@ export async function bootstrapApplication() {
   container.bind<IExceptionFilter>(AppTypes.ExceptionFilter).to(ExceptionFilter).inSingletonScope();
   container.bind<UserController>(AppTypes.UserController).to(UserController).inSingletonScope();
   container.bind<OfferController>(AppTypes.OfferController).to(OfferController).inSingletonScope();
+  container.bind<CommentController>(AppTypes.CommentsController).to(CommentController).inSingletonScope();
 
   const application = container.get<Application>(AppTypes.Application);
   await application.init();
