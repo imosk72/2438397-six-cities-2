@@ -10,6 +10,9 @@ import { ILogger } from '../../common/logging/ILogger.js';
 import { HttpError } from '../../common/httpServer/exceptions/httpError.js';
 import { OfferDto } from '../../models/offer/offerDto.js';
 import { IOfferRepository } from '../../repositories/offerRepository/IOfferRepository.js';
+import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto.js';
+import {ValidateObjectIdMiddleware} from '../../common/httpServer/middleware/validateObjectId.js';
+import {IsDocumentExistsMiddleware} from '../../common/httpServer/middleware/isDocumentExists.js';
 
 @injectable()
 export class OfferController extends RestController {
@@ -17,16 +20,48 @@ export class OfferController extends RestController {
 
   constructor (
     @inject(AppTypes.LoggerInterface) logger: ILogger,
-    @inject(AppTypes.UserRepository) offerRepository: IOfferRepository,
+    @inject(AppTypes.OfferRepository) offerRepository: IOfferRepository,
   ) {
     super(logger);
     this.offerRepository = offerRepository;
 
-    this.addRoute({ path: '/', method: HttpMethod.Get, handler: this.index });
-    this.addRoute({ path: '/', method: HttpMethod.Post, handler: this.create });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Get, handler: this.get });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Put, handler: this.update });
-    this.addRoute({ path: '/:offerId', method: HttpMethod.Delete, handler: this.delete });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Get,
+      handler: this.index,
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'id'),
+      ]
+    });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDtoMiddleware(OfferDto)]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.get,
+      middlewares: [new ValidateObjectIdMiddleware('id')],
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Put,
+      handler: this.update,
+      middlewares: [
+        new ValidateObjectIdMiddleware('id'),
+        new ValidateDtoMiddleware(OfferDto),
+        new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'id'),
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.delete,
+      middlewares: [new ValidateObjectIdMiddleware('id')]
+    });
     this.addRoute({ path: '/premium/:city', method: HttpMethod.Get, handler: this.getPremium });
   }
 

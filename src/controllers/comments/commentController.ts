@@ -7,11 +7,13 @@ import { AppTypes } from '../../application/appTypes.js';
 import { HttpMethod } from '../../common/httpServer/httpMethod.js';
 import { ILogger } from '../../common/logging/ILogger.js';
 import {ICommentRepository} from '../../repositories/commentRepository/ICommentRepository.js';
-import {CommentDto} from "../../models/comment/commentDto";
+import {CommentDto} from '../../models/comment/commentDto.js';
+import {IsDocumentExistsMiddleware} from '../../common/httpServer/middleware/isDocumentExists.js';
+import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto';
 
 @injectable()
 export class CommentController extends RestController {
-  private commentsRepository: ICommentRepository;
+  private readonly commentsRepository: ICommentRepository;
 
   constructor(
     @inject(AppTypes.LoggerInterface) logger: ILogger,
@@ -20,7 +22,15 @@ export class CommentController extends RestController {
     super(logger);
     this.commentsRepository = commentsRepository;
 
-    this.addRoute({path: '/:commentId', method: HttpMethod.Post, handler: this.create});
+    this.addRoute({
+      path: '/:commentId',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [
+        new ValidateDtoMiddleware(CommentDto),
+        new IsDocumentExistsMiddleware(this.commentsRepository, 'Comment', 'id'),
+      ],
+    });
   }
 
   public async create({ body }: Request<object, object, CommentDto>, response: Response): Promise<void> {

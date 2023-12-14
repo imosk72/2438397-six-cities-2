@@ -4,7 +4,7 @@ import { IMiddleware } from './IMiddleware.js';
 import { IEntityExistsRepository } from '../../repository/IEntityExistsRepository';
 import { HttpError } from '../exceptions/httpError.js';
 
-export class DocumentExistsMiddleware implements IMiddleware {
+export class IsDocumentExistsMiddleware implements IMiddleware {
   private readonly service: IEntityExistsRepository;
   private readonly entityName: string;
   private readonly paramName: string;
