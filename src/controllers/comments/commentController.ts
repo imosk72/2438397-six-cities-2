@@ -9,7 +9,7 @@ import { ILogger } from '../../common/logging/ILogger.js';
 import {ICommentRepository} from '../../repositories/commentRepository/ICommentRepository.js';
 import {CommentDto} from '../../models/comment/commentDto.js';
 import {IsDocumentExistsMiddleware} from '../../common/httpServer/middleware/isDocumentExists.js';
-import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto';
+import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto.js';
 
 @injectable()
 export class CommentController extends RestController {

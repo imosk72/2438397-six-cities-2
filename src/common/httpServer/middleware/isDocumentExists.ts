@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { NextFunction, Request, Response } from 'express';
 import { IMiddleware } from './IMiddleware.js';
-import { IEntityExistsRepository } from '../../repository/IEntityExistsRepository';
+import { IEntityExistsRepository } from '../../repository/IEntityExistsRepository.js';
 import { HttpError } from '../exceptions/httpError.js';
 
 export class IsDocumentExistsMiddleware implements IMiddleware {

@@ -19,7 +19,7 @@ import {ICommentRepository} from '../repositories/commentRepository/ICommentRepo
 import {CommentRepository} from '../repositories/commentRepository/CommentRepository.js';
 import {UserController} from '../controllers/user/userController.js';
 import {OfferController} from '../controllers/offer/offerController.js';
-import {CommentController} from '../controllers/comments/commentController.js'
+import {CommentController} from '../controllers/comments/commentController.js';
 import {IExceptionFilter} from '../common/httpServer/exceptions/IExceptionFilter.js';
 import {ExceptionFilter} from '../common/httpServer/exceptions/exceptionFilter.js';
 
