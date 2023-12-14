@@ -58,5 +58,10 @@ export const applicationConfigSchema = convict({
     env: 'UPLOAD_DIRECTORY',
     default: '/user_data/',
   },
+  CONFIG_SCHEMA: {
+    doc: 'Secret for sign JWT',
+    format: String,
+    env: 'JWT_SECRET',
+    default: '1234567890',
+  }
 });
-

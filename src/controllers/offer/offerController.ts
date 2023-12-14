@@ -10,9 +10,10 @@ import { ILogger } from '../../common/logging/ILogger.js';
 import { HttpError } from '../../common/httpServer/exceptions/httpError.js';
 import { OfferDto } from '../../models/offer/offerDto.js';
 import { IOfferRepository } from '../../repositories/offerRepository/IOfferRepository.js';
-import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto.js';
-import {ValidateObjectIdMiddleware} from '../../common/httpServer/middleware/validateObjectId.js';
-import {IsDocumentExistsMiddleware} from '../../common/httpServer/middleware/isDocumentExists.js';
+import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validateDto.js';
+import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validateObjectId.js';
+import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/isDocumentExists.js';
+import { PrivateRouteMiddleware } from '../../common/httpServer/middleware/authentication.js';
 
 @injectable()
 export class OfferController extends RestController {
@@ -38,7 +39,7 @@ export class OfferController extends RestController {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDtoMiddleware(OfferDto)]
+      middlewares: [new PrivateRouteMiddleware(), new ValidateDtoMiddleware(OfferDto)]
     });
     this.addRoute({
       path: '/:offerId',
@@ -51,6 +52,7 @@ export class OfferController extends RestController {
       method: HttpMethod.Put,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('id'),
         new ValidateDtoMiddleware(OfferDto),
         new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'id'),
@@ -60,7 +62,7 @@ export class OfferController extends RestController {
       path: '/:offerId',
       method: HttpMethod.Delete,
       handler: this.delete,
-      middlewares: [new ValidateObjectIdMiddleware('id')]
+      middlewares: [new PrivateRouteMiddleware(), new ValidateObjectIdMiddleware('id')]
     });
     this.addRoute({ path: '/premium/:city', method: HttpMethod.Get, handler: this.getPremium });
   }
@@ -72,9 +74,9 @@ export class OfferController extends RestController {
   }
 
   public async create(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, OfferDto>, response: Response,
+    { body, user }: Request<Record<string, unknown>, Record<string, unknown>, OfferDto>, response: Response,
   ): Promise<void> {
-    const result = await this.offerRepository.save(body);
+    const result = await this.offerRepository.save({...body, authorId: user.id});
     this.created(response, result);
   }
 
@@ -89,7 +91,7 @@ export class OfferController extends RestController {
   }
 
   public async update(
-    { params, body }: Request<Record<string, unknown>, Record<string, unknown>, OfferDto>,
+    { params, body, user }: Request<Record<string, unknown>, Record<string, unknown>, OfferDto>,
     response: Response,
   ): Promise<void> {
     const offer = await this.offerRepository.findById(`${params.offerId}`);
@@ -98,7 +100,7 @@ export class OfferController extends RestController {
       throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${params.offerId} not found.`, 'OfferController');
     }
 
-    const updatedOffer = await this.offerRepository.updateById(`${params.offerId}`, body);
+    const updatedOffer = await this.offerRepository.updateById(`${params.offerId}`, {...body, authorId: user.id});
     this.ok(response, updatedOffer);
   }
 
