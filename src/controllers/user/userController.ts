@@ -17,7 +17,7 @@ import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/valida
 import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validateObjectId.js';
 import { UploadFileMiddleware } from '../../common/httpServer/middleware/uploadFile.js';
 import { ConfigRegistry } from '../../common/config/configRegistry.js';
-import { PrivateRouteMiddleware } from "../../common/httpServer/middleware/authentication";
+import { PrivateRouteMiddleware } from '../../common/httpServer/middleware/authentication.js';
 import { LoginUserRdo } from '../../rdo/userRdo.js';
 
 @injectable()
