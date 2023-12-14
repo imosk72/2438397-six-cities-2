@@ -51,6 +51,12 @@ export const applicationConfigSchema = convict({
     format: String,
     env: 'DEFAULT_PASSWORD',
     default: '12345678',
-  }
+  },
+  UPLOAD_DIRECTORY: {
+    doc: 'Directory for upload user files',
+    format: String,
+    env: 'UPLOAD_DIRECTORY',
+    default: '/user_data/',
+  },
 });
 

@@ -14,19 +14,24 @@ import { OfferDto } from '../../models/offer/offerDto.js';
 import {IsDocumentExistsMiddleware} from '../../common/httpServer/middleware/isDocumentExists.js';
 import {IOfferRepository} from '../../repositories/offerRepository/IOfferRepository.js';
 import {ValidateDtoMiddleware} from '../../common/httpServer/middleware/validateDto.js';
+import {ValidateObjectIdMiddleware} from '../../common/httpServer/middleware/validateObjectId.js';
+import {UploadFileMiddleware} from '../../common/httpServer/middleware/uploadFile.js';
+import {ConfigRegistry} from '../../common/config/configRegistry.js';
 
 @injectable()
 export class UserController extends RestController {
+  private readonly config: ConfigRegistry;
   private readonly userRepository: IUserRepository;
   private readonly offerRepository: IOfferRepository;
-
 
   constructor (
     @inject(AppTypes.LoggerInterface) logger: ILogger,
     @inject(AppTypes.UserRepository) userRepository: IUserRepository,
     @inject(AppTypes.UserRepository) offerRepository: IOfferRepository,
+    @inject(AppTypes.ConfigRegistry) config: ConfigRegistry,
   ) {
     super(logger);
+    this.config = config;
     this.userRepository = userRepository;
     this.offerRepository = offerRepository;
 
@@ -46,6 +51,15 @@ export class UserController extends RestController {
     });
     this.addRoute({path: '/favorite/:offerId', method: HttpMethod.Delete, handler: this.deleteFavorite});
     this.addRoute({path: '/favorite', method: HttpMethod.Get, handler: this.getFavorite});
+    this.addRoute({
+      path: '/:userId/avatar',
+      method: HttpMethod.Post,
+      handler: this.uploadAvatar,
+      middlewares: [
+        new ValidateObjectIdMiddleware('userId'),
+        new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'avatar'),
+      ],
+    });
   }
 
   public async register(
@@ -98,5 +112,11 @@ export class UserController extends RestController {
   ): Promise<void> {
     await this.userRepository.removeFavouriteOffer(body.offerId, body.userId);
     this.noContent(res, { message: 'Offer removed from favourites' });
+  }
+
+  public async uploadAvatar(request: Request, response: Response) {
+    this.created(response, {
+      filepath: request.file?.path,
+    });
   }
 }
