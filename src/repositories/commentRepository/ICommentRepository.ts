@@ -2,7 +2,7 @@ import { IEntityExistsRepository } from '../../common/repository/IEntityExistsRe
 import { CommentDto } from '../../models/comment/commentDto.js';
 
 export interface ICommentRepository extends IEntityExistsRepository {
-  save(dto: CommentDto): Promise<CommentDto>;
+  save(dto: CommentDto): Promise<CommentDto | null>;
 
   findById(id: string): Promise<CommentDto | null>;
 }

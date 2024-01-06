@@ -1,15 +1,16 @@
 import { inject, injectable } from 'inversify';
-import express, {Express} from 'express';
-
-import {ILogger} from '../common/logging/ILogger.js';
-import {AppTypes} from './appTypes.js';
-import {ConfigRegistry} from '../common/config/configRegistry.js';
-import {IDbClient} from '../common/db/IDbClient.js';
-import {getMongoConnectionUri} from '../utils/db.js';
-import {IExceptionFilter} from '../common/httpServer/exceptions/IExceptionFilter.js';
-import {UserController} from '../controllers/user/userController.js';
-import {OfferController} from '../controllers/offer/offerController.js';
-import {AuthenticateMiddleware} from '../common/httpServer/middleware/authentication.js';
+import express, { Express } from 'express';
+import fileupload from 'express-fileupload';
+import { ILogger } from '../common/logging/ILogger.js';
+import { AppTypes } from './appTypes.js';
+import { ConfigRegistry } from '../common/config/configRegistry.js';
+import { IDbClient } from '../common/db/IDbClient.js';
+import { getMongoConnectionUri } from '../utils/db.js';
+import { IExceptionFilter } from '../common/httpServer/exceptions/IExceptionFilter.js';
+import { UserController } from '../controllers/user/userController.js';
+import { OfferController } from '../controllers/offer/offerController.js';
+import { AuthenticateMiddleware } from '../common/httpServer/middleware/authentication.js';
+import { ITokenRepository } from '../repositories/tokenRepository/ITokenRepository.js';
 
 @injectable()
 export class Application {
@@ -19,6 +20,7 @@ export class Application {
   private readonly exceptionFilter: IExceptionFilter;
   private readonly userController: UserController;
   private readonly offerController: OfferController;
+  private readonly tokenRepository: ITokenRepository;
   private readonly server: Express;
 
   constructor(
@@ -28,6 +30,7 @@ export class Application {
     @inject(AppTypes.ExceptionFilter) exceptionFilter: IExceptionFilter,
     @inject(AppTypes.UserController) userController: UserController,
     @inject(AppTypes.OfferController) offerController: OfferController,
+    @inject(AppTypes.TokenRepository) tokenRepository: ITokenRepository,
   ) {
     this.logger = logger;
     this.config = config;
@@ -35,6 +38,7 @@ export class Application {
     this.exceptionFilter = exceptionFilter;
     this.userController = userController;
     this.offerController = offerController;
+    this.tokenRepository = tokenRepository;
 
     this.server = express();
   }
@@ -45,8 +49,8 @@ export class Application {
 
     await this.initDb();
 
-    await this.initRoutes();
     await this.initMiddlewares();
+    await this.initRoutes();
     await this.initExceptionFilters();
     await this.initHttpServer();
   }
@@ -68,7 +72,7 @@ export class Application {
   private async initHttpServer() {
     const port = this.config.get('APP_PORT');
 
-    this.logger.info(`Initializing http server on port ${port}}`);
+    this.logger.info(`Initializing http server on port ${port}`);
 
     this.server.listen(port);
 
@@ -79,7 +83,8 @@ export class Application {
     this.logger.info('Initializing middlewares');
 
     this.server.use(express.json());
-    const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'));
+    this.server.use(fileupload());
+    const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'), this.tokenRepository);
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
 
     this.logger.info('Middlewares initialized');
@@ -96,8 +101,8 @@ export class Application {
   private async initRoutes() {
     this.logger.info('Initializing routes');
 
-    this.server.use('/offers', this.offerController.router);
-    this.server.use('/users', this.userController.router);
+    this.server.use('/offer', this.offerController.router);
+    this.server.use('/user', this.userController.router);
 
     this.logger.info('Routes initialized');
   }

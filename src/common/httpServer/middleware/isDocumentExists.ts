@@ -5,21 +5,21 @@ import { IEntityExistsRepository } from '../../repository/IEntityExistsRepositor
 import { HttpError } from '../exceptions/httpError.js';
 
 export class IsDocumentExistsMiddleware implements IMiddleware {
-  private readonly service: IEntityExistsRepository;
+  private readonly repository: IEntityExistsRepository;
   private readonly entityName: string;
   private readonly paramName: string;
 
   constructor(
-    service: IEntityExistsRepository, entityName: string, paramName: string,
+    repository: IEntityExistsRepository, entityName: string, paramName: string,
   ) {
-    this.service = service;
+    this.repository = repository;
     this.entityName = entityName;
     this.paramName = paramName;
   }
 
   public async execute({ params }: Request, _response: Response, next: NextFunction): Promise<void> {
     const documentId = params[this.paramName];
-    if (!(await this.service.exists(documentId))) {
+    if (!(await this.repository.exists(documentId))) {
       throw new HttpError(StatusCodes.NOT_FOUND, `${this.entityName} with ${documentId} not found.`, 'DocumentExists');
     }
 

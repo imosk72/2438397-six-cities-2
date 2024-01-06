@@ -1,12 +1,17 @@
+import {Expose} from 'class-transformer';
+import {UserLevel} from '../enums.js';
+
 export class UserDto {
+  @Expose()
   public id?: string;
+
+  @Expose()
   public email!: string;
-  public avatar?: string;
-  public name!: string;
-  public password!: string;
+
+  @Expose()
+  public type!: UserLevel;
+
+  @Expose()
+  public username!: string;
 }
 
-export class LoginUserDto {
-  public email!: string;
-  public password!: string;
-}

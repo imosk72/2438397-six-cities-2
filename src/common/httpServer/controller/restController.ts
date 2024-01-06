@@ -40,7 +40,7 @@ export abstract class RestController implements IController {
     this.send(response, StatusCodes.CREATED, data);
   }
 
-  public noContent<T>(response: Response, data: T): void {
-    this.send(response, StatusCodes.NO_CONTENT, data);
+  public noContent(response: Response): void {
+    this.send(response, StatusCodes.NO_CONTENT, null);
   }
 }

@@ -3,7 +3,7 @@ import {Schema} from 'mongoose';
 
 export const UserModelSchema = new Schema(
   {
-    name: String,
+    username: String,
     email: String,
     avatar: String,
     password: String,
@@ -14,6 +14,6 @@ export const UserModelSchema = new Schema(
     },
     createdAt: Date,
     updatedAt: Date,
-    favorite: [String],
+    favourite: [String],
   }
 );

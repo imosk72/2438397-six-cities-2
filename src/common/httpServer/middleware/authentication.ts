@@ -4,14 +4,19 @@ import { StatusCodes } from 'http-status-codes';
 import { createSecretKey } from 'node:crypto';
 import { IMiddleware } from './IMiddleware.js';
 import { HttpError } from '../exceptions/httpError.js';
-
-export const BLACK_LIST_TOKENS: Set<string> = new Set();
+import { JWT_ALGORITHM } from '../../../utils/jwt.js';
+import { ITokenRepository } from '../../../repositories/tokenRepository/ITokenRepository.js';
 
 export class AuthenticateMiddleware implements IMiddleware {
   private readonly jwtSecret: string;
+  private readonly tokenRepository: ITokenRepository;
 
-  constructor(jwtSecret: string) {
+  constructor(
+    jwtSecret: string,
+    tokenRepository: ITokenRepository,
+  ) {
     this.jwtSecret = jwtSecret;
+    this.tokenRepository = tokenRepository;
   }
 
   public async execute(request: Request, _response: Response, next: NextFunction): Promise<void> {
@@ -20,15 +25,13 @@ export class AuthenticateMiddleware implements IMiddleware {
       return next();
     }
 
-    const [, token] = authorizationHeader;
-
+    const [token] = authorizationHeader;
     try {
       const { payload } = await jwtVerify(token, createSecretKey(this.jwtSecret, 'utf-8'), {
-        algorithms: ['HS256'],
+        algorithms: [JWT_ALGORITHM],
       });
-
-      if (BLACK_LIST_TOKENS.has(token)) {
-        return next(new HttpError(StatusCodes.UNAUTHORIZED, 'Token in black list', 'AuthenticateMiddleware'));
+      if (await this.tokenRepository.getUserId(token) === null) {
+        return next(new HttpError(StatusCodes.UNAUTHORIZED, 'Token revoked', 'AuthenticateMiddleware'));
       }
       request.user = { email: payload.email as string, id: payload.id as string };
       return next();

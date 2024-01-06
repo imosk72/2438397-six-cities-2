@@ -1,7 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { plainToInstance } from 'class-transformer';
 
 import { RestController } from '../../common/httpServer/controller/restController.js';
 import { AppTypes } from '../../application/appTypes.js';
@@ -30,10 +29,7 @@ export class OfferController extends RestController {
       path: '/',
       method: HttpMethod.Get,
       handler: this.index,
-      middlewares: [
-        new ValidateObjectIdMiddleware('offerId'),
-        new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'id'),
-      ]
+      middlewares: []
     });
     this.addRoute({
       path: '/',
@@ -45,7 +41,10 @@ export class OfferController extends RestController {
       path: '/:offerId',
       method: HttpMethod.Get,
       handler: this.get,
-      middlewares: [new ValidateObjectIdMiddleware('id')],
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'offerId')
+      ]
     });
     this.addRoute({
       path: '/:offerId',
@@ -53,7 +52,7 @@ export class OfferController extends RestController {
       handler: this.update,
       middlewares: [
         new PrivateRouteMiddleware(),
-        new ValidateObjectIdMiddleware('id'),
+        new ValidateObjectIdMiddleware('offerId'),
         new ValidateDtoMiddleware(OfferDto),
         new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'id'),
       ]
@@ -67,10 +66,11 @@ export class OfferController extends RestController {
     this.addRoute({ path: '/premium/:city', method: HttpMethod.Get, handler: this.getPremium });
   }
 
-  public async index({ params }: Request<Record<string, unknown>>, response: Response): Promise<void> {
-    const limit = params.limit ? parseInt(`${params.limit}`, 10) : 20;
-    const offers = await this.offerRepository.findAny(limit);
-    this.ok(response, plainToInstance(OfferDto, offers, { excludeExtraneousValues: true }));
+  public async index({ query }: Request<Record<string, unknown>>, response: Response): Promise<void> {
+    const limit = query.limit ? parseInt(`${query.limit}`, 10) : 60;
+    const offset = query.offset ? parseInt(`${query.offset}`, 10) : 0;
+    const offers = await this.offerRepository.findAny(limit, offset);
+    this.ok(response, offers);
   }
 
   public async create(
@@ -80,14 +80,14 @@ export class OfferController extends RestController {
     this.created(response, result);
   }
 
-  public async get({ params }: Request<Record<string, unknown>>, res: Response): Promise<void> {
+  public async get({ params }: Request<Record<string, unknown>>, response: Response): Promise<void> {
     const offer = await this.offerRepository.findById(`${params.offerId}`);
 
     if (!offer) {
       throw new HttpError(StatusCodes.NOT_FOUND, `Offer with id ${params.offerId} not found.`, 'OfferController');
     }
 
-    this.ok(res, offer);
+    this.ok(response, offer);
   }
 
   public async update(
@@ -106,7 +106,7 @@ export class OfferController extends RestController {
 
   public async delete({ params }: Request<Record<string, unknown>>, response: Response): Promise<void> {
     await this.offerRepository.deleteById(`${params.offerId}`);
-    this.noContent(response, `Offer ${params.offerId} was deleted.`);
+    this.noContent(response);
   }
 
   public async getPremium({ params }: Request<Record<string, unknown>>, response: Response): Promise<void> {

@@ -1,11 +1,12 @@
 import { inject, injectable } from 'inversify';
-import {Model, Schema} from 'mongoose';
+import { Model, Schema } from 'mongoose';
 
 import {IDbClient} from '../../common/db/IDbClient.js';
 import { OfferDto } from '../../models/offer/offerDto.js';
 import { AppTypes } from '../../application/appTypes.js';
 import { ILogger } from '../../common/logging/ILogger.js';
-import {IOfferRepository} from './IOfferRepository.js';
+import { IOfferRepository } from './IOfferRepository.js';
+import { convertMaybeDbModelToDto, convertModelsArrayToDto } from '../../utils/typeConverters.js';
 
 const MAX_OFFERS_LIMIT = 20;
 const SORT_DESC = -1;
@@ -13,7 +14,9 @@ const SORT_DESC = -1;
 @injectable()
 export class OfferRepository implements IOfferRepository {
   private readonly logger: ILogger;
-  private readonly OfferModel: typeof Model;
+  private readonly dbClient: IDbClient;
+  private readonly offerModelSchema: Schema;
+  private offerModel: typeof Model | null;
 
 
   constructor(
@@ -22,11 +25,13 @@ export class OfferRepository implements IOfferRepository {
     @inject(AppTypes.OfferModelSchema) offerModelSchema: Schema,
   ) {
     this.logger = logger;
-    this.OfferModel = dbClient.getConnection().model('Offer', offerModelSchema);
+    this.dbClient = dbClient;
+    this.offerModelSchema = offerModelSchema;
+    this.offerModel = null;
   }
 
-  public async save(dto: OfferDto): Promise<OfferDto> {
-    const model = await this.OfferModel.create(
+  public async save(dto: OfferDto): Promise<OfferDto | null> {
+    const model = await this._getOfferModel().create(
       {
         ...dto,
         createdAt: Date.now(),
@@ -36,45 +41,64 @@ export class OfferRepository implements IOfferRepository {
       }
     );
     this.logger.info(`New offer with id ${model._id} created`);
-    return model;
+    return convertMaybeDbModelToDto(OfferDto, model);
   }
 
   public async findById(id: string): Promise<OfferDto | null> {
     this.logger.info(`Finding offer model by id ${id}`);
-    return this.OfferModel.findOne({_id: id}).exec();
+    const model = await this._getOfferModel().findOne({_id: id}).exec();
+    return convertMaybeDbModelToDto(OfferDto, model);
   }
 
   public async updateRating(id: string, rating: number): Promise<OfferDto | null> {
     this.logger.info(`Try to add ${rating} amount to offer ${id}`);
-    return this.OfferModel
+    const model = await this._getOfferModel()
       .findByIdAndUpdate(id, {
         $inc: {commentCount: 1, commentsTotalRating: rating},
       })
       .exec();
+    return convertMaybeDbModelToDto(OfferDto, model);
   }
 
   public async deleteById(id: string): Promise<void> {
-    await this.OfferModel.findByIdAndDelete(id).exec();
+    await this._getOfferModel().findByIdAndDelete(id).exec();
   }
 
-  public async findAny(limit: number): Promise<OfferDto[] | null> {
+  public async findAny(limit: number, offset: number): Promise<OfferDto[] | null> {
     limit = limit ?? MAX_OFFERS_LIMIT;
-    return this.OfferModel.find().sort({ createdAt: SORT_DESC }).limit(limit).exec();
+    offset = offset ?? 0;
+    const models = await this._getOfferModel()
+      .find()
+      .sort({ createdAt: SORT_DESC })
+      .skip(offset)
+      .limit(limit)
+      .exec();
+    return convertModelsArrayToDto(OfferDto, models);
   }
 
   public async findPremiumByCity(city: string): Promise<OfferDto[] | null> {
-    return await this.OfferModel
+    const models = await this._getOfferModel()
       .find({ city: city, isPremium: true })
       .sort({ createdAt: SORT_DESC })
       .limit(MAX_OFFERS_LIMIT)
       .exec();
+    return convertModelsArrayToDto(OfferDto, models);
   }
 
   public async updateById(id: string, dto: OfferDto): Promise<void> {
-    await this.OfferModel.findByIdAndUpdate(id, dto, { new: true }).exec();
+    await this._getOfferModel().findByIdAndUpdate(
+      id, {...dto, updatedAt: Date.now()}, { new: true }
+    ).exec();
   }
 
   public async exists(id: string): Promise<boolean> {
     return await this.findById(id) !== null;
+  }
+
+  private _getOfferModel(): typeof Model {
+    if (this.offerModel === null) {
+      this.offerModel = this.dbClient.getConnection().model('Offer', this.offerModelSchema);
+    }
+    return this.offerModel;
   }
 }

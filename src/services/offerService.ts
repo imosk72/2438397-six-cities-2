@@ -62,7 +62,7 @@ export class OfferService {
       title: getRandomItem<string>(initialData.titles),
       description: getRandomItem<string>(initialData.descriptions),
       date: new Date(),
-      city: City.EKATERINBURG,
+      city: City.AMSTERDAM,
       preview: getRandomItem<string>(initialData.images),
       images: [getRandomItem<string>(initialData.images), getRandomItem<string>(initialData.images)],
       isPremium: getRandomItem<boolean>([true, false]),

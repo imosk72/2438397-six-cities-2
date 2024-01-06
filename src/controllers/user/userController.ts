@@ -9,8 +9,7 @@ import { HttpMethod } from '../../common/httpServer/httpMethod.js';
 import { ILogger } from '../../common/logging/ILogger.js';
 import { HttpError } from '../../common/httpServer/exceptions/httpError.js';
 import { IUserRepository } from '../../repositories/userRepository/IUserRepository.js';
-import { UserDto, LoginUserDto } from '../../models/user/userDto.js';
-import { OfferDto } from '../../models/offer/offerDto.js';
+import { UserDto } from '../../models/user/userDto.js';
 import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/isDocumentExists.js';
 import { IOfferRepository } from '../../repositories/offerRepository/IOfferRepository.js';
 import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validateDto.js';
@@ -18,35 +17,42 @@ import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/v
 import { UploadFileMiddleware } from '../../common/httpServer/middleware/uploadFile.js';
 import { ConfigRegistry } from '../../common/config/configRegistry.js';
 import { PrivateRouteMiddleware } from '../../common/httpServer/middleware/authentication.js';
-import { LoginUserRdo } from '../../rdo/userRdo.js';
+import { CreateUserRequest, LoginUserRequest } from '../../models/user/userRequests.js';
+import { createSHA256Hash } from '../../utils/hashing.js';
+import { ITokenRepository } from '../../repositories/tokenRepository/ITokenRepository.js';
+import { createJWT, JWT_ALGORITHM } from '../../utils/jwt.js';
 
 @injectable()
 export class UserController extends RestController {
   private readonly config: ConfigRegistry;
   private readonly userRepository: IUserRepository;
   private readonly offerRepository: IOfferRepository;
+  private readonly tokenRepository: ITokenRepository;
 
   constructor (
     @inject(AppTypes.LoggerInterface) logger: ILogger,
     @inject(AppTypes.UserRepository) userRepository: IUserRepository,
-    @inject(AppTypes.UserRepository) offerRepository: IOfferRepository,
+    @inject(AppTypes.OfferRepository) offerRepository: IOfferRepository,
+    @inject(AppTypes.TokenRepository) tokenRepository: ITokenRepository,
     @inject(AppTypes.ConfigRegistry) config: ConfigRegistry,
   ) {
     super(logger);
     this.config = config;
     this.userRepository = userRepository;
     this.offerRepository = offerRepository;
+    this.tokenRepository = tokenRepository;
 
     this.addRoute({
       path: '/register',
-      method: HttpMethod.Get,
+      method: HttpMethod.Post,
       handler: this.register,
-      middlewares: [new ValidateDtoMiddleware(UserDto)]
+      middlewares: [new ValidateDtoMiddleware(CreateUserRequest)],
     });
     this.addRoute({
       path: '/login',
-      method: HttpMethod.Get,
-      handler: this.checkAuthenticate,
+      method: HttpMethod.Post,
+      handler: this.login,
+      middlewares: [new ValidateDtoMiddleware(LoginUserRequest)],
     });
     this.addRoute({
       path: '/logout',
@@ -55,19 +61,37 @@ export class UserController extends RestController {
       middlewares: [new PrivateRouteMiddleware()],
     });
     this.addRoute({
-      path: '/favorite/:offerId',
+      path: '/favourite/:offerId',
       method: HttpMethod.Post,
-      handler: this.addFavorite,
-      middlewares: [new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'id'),]
+      handler: this.addFavourite,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'offerId'),
+      ],
     });
-    this.addRoute({path: '/favorite/:offerId', method: HttpMethod.Delete, handler: this.deleteFavorite});
-    this.addRoute({path: '/favorite', method: HttpMethod.Get, handler: this.getFavorite});
     this.addRoute({
-      path: '/:userId/avatar',
+      path: '/favourite/:offerId',
+      method: HttpMethod.Delete,
+      handler: this.deleteFavourite,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new IsDocumentExistsMiddleware(this.offerRepository, 'Offer', 'offerId')
+      ]
+    });
+    this.addRoute({
+      path: '/favourite',
+      method: HttpMethod.Get,
+      handler: this.getFavourite,
+      middlewares: [new PrivateRouteMiddleware()],
+    });
+    this.addRoute({
+      path: '/avatar',
       method: HttpMethod.Post,
       handler: this.uploadAvatar,
       middlewares: [
-        new ValidateObjectIdMiddleware('userId'),
+        new PrivateRouteMiddleware(),
         new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'avatar'),
       ],
     });
@@ -87,7 +111,7 @@ export class UserController extends RestController {
   }
 
   public async login(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, LoginUserDto>, _response: Response,
+    { body }: Request<Record<string, unknown>, Record<string, unknown>, LoginUserRequest>, response: Response,
   ): Promise<void> {
     const user = await this.userRepository.findByEmail(body.email);
 
@@ -95,54 +119,57 @@ export class UserController extends RestController {
       throw new HttpError(StatusCodes.UNAUTHORIZED, `User with email ${body.email} not found.`, 'UserController');
     }
 
-    throw new HttpError(StatusCodes.NOT_IMPLEMENTED, 'Not implemented', 'UserController');
+    if (
+      await this.userRepository.getHashedPassword(user.id || '') !== createSHA256Hash(body.password, this.config?.get('SALT'))
+    ) {
+      throw new HttpError(StatusCodes.UNAUTHORIZED, 'Wrong password', 'UserController');
+    }
+    const token = await createJWT(
+      JWT_ALGORITHM,
+      this.config.get('JWT_SECRET'),
+      {
+        email: user.email,
+        id: user.id,
+        date: new Date(),
+      }
+    );
+    await this.tokenRepository.save({token: token, userId: user.id || ''});
+    response.set('authorization', [token]);
+    this.noContent(response);
   }
 
   public async logout(request: Request, response: Response): Promise<void> {
-    const [, token] = String(request.headers.authorization?.split(' '));
+    const [token] = request.headers.authorization?.split(' ') || '';
+    await this.tokenRepository.remove(token);
 
     if (!request.user) {
       throw new HttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized', 'UserController');
     }
 
-    this.noContent(response, { token });
+    this.noContent(response);
   }
 
-  public async getFavorite(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, { userId: string }>, response: Response,
-  ): Promise<void> {
-    const result = await this.userRepository.getFavourites(body.userId);
-    this.ok(response, plainToInstance(OfferDto, result, { excludeExtraneousValues: true }));
+  public async getFavourite(request: Request, response: Response): Promise<void> {
+    const offerIds = await this.userRepository.getFavourites(request.user.id);
+    const offers = await Promise.all(offerIds.map(
+      async (offerId) => await this.offerRepository.findById(offerId)
+    ));
+    this.ok(response, offers);
   }
 
-  public async addFavorite(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, { offerId: string; userId: string }>,
-    res: Response,
-  ): Promise<void> {
-    await this.userRepository.addToFavoriteOffer(body.offerId, body.userId);
-    this.noContent(res, { message: 'Offer added to favourites' });
+  public async addFavourite(request: Request, response: Response): Promise<void> {
+    await this.userRepository.addToFavoriteOffer(request.user.id, request.params.offerId);
+    this.noContent(response);
   }
 
-  public async deleteFavorite(
-    { body }: Request<Record<string, unknown>, Record<string, unknown>, { offerId: string; userId: string }>,
-    res: Response,
-  ): Promise<void> {
-    await this.userRepository.removeFavouriteOffer(body.offerId, body.userId);
-    this.noContent(res, { message: 'Offer removed from favourites' });
+  public async deleteFavourite(request: Request, response: Response): Promise<void> {
+    await this.userRepository.removeFavouriteOffer(request.user.id, request.params.offerId);
+    this.noContent(response);
   }
 
   public async uploadAvatar(request: Request, response: Response) {
     this.created(response, {
       filepath: request.file?.path,
     });
-  }
-
-  public async checkAuthenticate({ user: { email } }: Request, res: Response) {
-    const foundedUser = await this.userRepository.findByEmail(email);
-
-    if (!foundedUser) {
-      throw new HttpError(StatusCodes.UNAUTHORIZED, 'Unauthorized', 'UserController');
-    }
-    this.ok(res, plainToInstance(LoginUserRdo, foundedUser, { excludeExtraneousValues: true }));
   }
 }

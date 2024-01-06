@@ -23,18 +23,6 @@ paths:
           required: false
           schema:
             type: integer
-        - name: isPremium
-          in: query
-          description: Filter offers by premium status (optional)
-          required: false
-          schema:
-            type: boolean
-        - name: isFavourite
-          in: query
-          description: Filter offers by favorite status (optional)
-          required: false
-          schema:
-            type: boolean
       responses:
         200:
           description: Successful response
@@ -46,8 +34,6 @@ paths:
                   $ref: '#/components/schemas/Offer'
         400:
           description: Validation Error
-        401:
-          description: Unauthorized
 
     post:
       tags:
@@ -360,12 +346,12 @@ components:
     City:
       type: string
       enum:
-        - Ekaterinburg
-        - Tyumen
-        - Tambov
-        - Magadan
-        - Vorkuta
-        - Moscow
+        - Paris
+        - Cologne
+        - Brussels
+        - Amsterdam
+        - Hamburg
+        - Dusseldorf
 
     HousingType:
       type: string
@@ -416,11 +402,13 @@ components:
     Offer:
       type: object
       properties:
+        id:
+          type: string
         title:
           type: string
         description:
           type: string
-        publicationDate:
+        date:
           type: string
           format: date-time
         city:
@@ -449,9 +437,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Facilities'
-        author:
-          $ref: '#/components/schemas/User'
+        authorId:
+          type: string
         commentsCount:
+          type: number
+        commentsTotalRating:
           type: number
         coordinates:
           $ref: '#/components/schemas/Coordinates'

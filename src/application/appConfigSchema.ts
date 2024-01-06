@@ -56,9 +56,9 @@ export const applicationConfigSchema = convict({
     doc: 'Directory for upload user files',
     format: String,
     env: 'UPLOAD_DIRECTORY',
-    default: '/user_data/',
+    default: './user_data/',
   },
-  CONFIG_SCHEMA: {
+  JWT_SECRET: {
     doc: 'Secret for sign JWT',
     format: String,
     env: 'JWT_SECRET',
