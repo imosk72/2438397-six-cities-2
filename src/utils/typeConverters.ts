@@ -13,6 +13,8 @@ export function convertModelsArrayToDto<T>(someDto: ClassConstructor<T>, modelsA
 
 function _convertDbModelToDto<T>(someDto: ClassConstructor<T>, plainModel: any) {
   return plainToInstance(
-    someDto, {id: plainModel._id.toString(), ...plainModel._doc}, { excludeExtraneousValues: true }
+    someDto,
+    {id: plainModel._id.toString(), ...plainModel._doc, authorId: plainModel.authorId?.toString()},
+    { excludeExtraneousValues: true },
   );
 }

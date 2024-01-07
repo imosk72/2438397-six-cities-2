@@ -54,7 +54,7 @@ export class OfferRepository implements IOfferRepository {
     this.logger.info(`Try to add ${rating} amount to offer ${id}`);
     const model = await this._getOfferModel()
       .findByIdAndUpdate(id, {
-        $inc: {commentCount: 1, commentsTotalRating: rating},
+        $inc: {commentsCount: 1, commentsTotalRating: rating},
       })
       .exec();
     return convertMaybeDbModelToDto(OfferDto, model);
@@ -76,11 +76,15 @@ export class OfferRepository implements IOfferRepository {
     return convertModelsArrayToDto(OfferDto, models);
   }
 
-  public async findPremiumByCity(city: string): Promise<OfferDto[] | null> {
+  public async findPremiumByCity(city: string, limit: number, offset: number): Promise<OfferDto[] | null> {
+    limit = limit ?? MAX_OFFERS_LIMIT;
+    offset = offset ?? 0;
+
     const models = await this._getOfferModel()
       .find({ city: city, isPremium: true })
       .sort({ createdAt: SORT_DESC })
-      .limit(MAX_OFFERS_LIMIT)
+      .skip(offset)
+      .limit(limit)
       .exec();
     return convertModelsArrayToDto(OfferDto, models);
   }

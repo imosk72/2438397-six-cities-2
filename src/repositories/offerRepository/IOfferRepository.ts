@@ -10,5 +10,5 @@ export interface IOfferRepository extends IEntityExistsRepository {
   findAny(limit: number, offset: number): Promise<OfferDto[] | null>;
   updateById(id: string, dto: OfferDto): Promise<void>;
   deleteById(id: string): Promise<void>;
-  findPremiumByCity(city: string): Promise<OfferDto[] | null>;
+  findPremiumByCity(city: string, limit: number, offset: number): Promise<OfferDto[] | null>;
 }

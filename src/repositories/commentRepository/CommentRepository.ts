@@ -6,7 +6,10 @@ import { CommentDto } from '../../models/comment/commentDto.js';
 import { AppTypes } from '../../application/appTypes.js';
 import { ILogger } from '../../common/logging/ILogger.js';
 import { ICommentRepository } from './ICommentRepository.js';
-import {convertMaybeDbModelToDto} from '../../utils/typeConverters.js';
+import { convertMaybeDbModelToDto, convertModelsArrayToDto } from '../../utils/typeConverters.js';
+
+const MAX_COMMENTS_COUNT = 20;
+const SORT_DESC = -1;
 
 @injectable()
 export class CommentRepository implements ICommentRepository {
@@ -45,6 +48,21 @@ export class CommentRepository implements ICommentRepository {
 
   public async exists(id: string): Promise<boolean> {
     return await this.findById(id) !== null;
+  }
+
+  async findByOfferId(offerId: string, limit: number, offset: number): Promise<CommentDto[] | null> {
+    this.logger.info(`Finding comments of offer ${offerId}`);
+    limit = limit ?? MAX_COMMENTS_COUNT;
+    offset = offset ?? 0;
+
+    const models = await this._getCommentModel()
+      .find({offerId: offerId})
+      .sort({ date: SORT_DESC })
+      .skip(offset)
+      .limit(limit)
+      .exec();
+
+    return convertModelsArrayToDto(CommentDto, models);
   }
 
   private _getCommentModel(): typeof Model {

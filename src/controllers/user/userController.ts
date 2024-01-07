@@ -151,9 +151,15 @@ export class UserController extends RestController {
 
   public async getFavourite(request: Request, response: Response): Promise<void> {
     const offerIds = await this.userRepository.getFavourites(request.user.id);
-    const offers = await Promise.all(offerIds.map(
+    let offers = await Promise.all(offerIds.map(
       async (offerId) => await this.offerRepository.findById(offerId)
     ));
+    offers = offers.filter((offer) => offer !== null);
+    offers.forEach((offer) => {
+      if (offer) {
+        offer.isFavourite = true;
+      }
+    });
     this.ok(response, offers);
   }
 

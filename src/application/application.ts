@@ -11,6 +11,7 @@ import { UserController } from '../controllers/user/userController.js';
 import { OfferController } from '../controllers/offer/offerController.js';
 import { AuthenticateMiddleware } from '../common/httpServer/middleware/authentication.js';
 import { ITokenRepository } from '../repositories/tokenRepository/ITokenRepository.js';
+import { CommentController } from '../controllers/comments/commentController.js';
 
 @injectable()
 export class Application {
@@ -20,6 +21,7 @@ export class Application {
   private readonly exceptionFilter: IExceptionFilter;
   private readonly userController: UserController;
   private readonly offerController: OfferController;
+  private readonly commentController: CommentController;
   private readonly tokenRepository: ITokenRepository;
   private readonly server: Express;
 
@@ -30,6 +32,7 @@ export class Application {
     @inject(AppTypes.ExceptionFilter) exceptionFilter: IExceptionFilter,
     @inject(AppTypes.UserController) userController: UserController,
     @inject(AppTypes.OfferController) offerController: OfferController,
+    @inject(AppTypes.CommentsController) commentController: CommentController,
     @inject(AppTypes.TokenRepository) tokenRepository: ITokenRepository,
   ) {
     this.logger = logger;
@@ -38,6 +41,7 @@ export class Application {
     this.exceptionFilter = exceptionFilter;
     this.userController = userController;
     this.offerController = offerController;
+    this.commentController = commentController;
     this.tokenRepository = tokenRepository;
 
     this.server = express();
@@ -103,6 +107,7 @@ export class Application {
 
     this.server.use('/offer', this.offerController.router);
     this.server.use('/user', this.userController.router);
+    this.server.use('/comment', this.commentController.router);
 
     this.logger.info('Routes initialized');
   }
