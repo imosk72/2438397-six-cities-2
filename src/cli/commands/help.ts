@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import pkg from '../../../package.json';
 
-import {ICliCommand} from '../ICliCommand.js';
+import { ICliCommand } from '../ICliCommand.js';
 
 export class HelpCommand implements ICliCommand {
   public readonly name = '--help';
@@ -17,8 +17,9 @@ export class HelpCommand implements ICliCommand {
     console.log('COMMANDS:');
     console.log(`    ${chalk.bold('--help')} - Shows a list of commands`);
     console.log(`    ${chalk.bold('--version')} - Shows a version`);
-    console.log(`    ${chalk.bold('import')} - Imports data from TSV-file`);
-    console.log(`    ${chalk.bold('generate')} - Generates TSV-files with offers`);
+    console.log(`    ${chalk.bold('--import')} - Imports data from TSV-file`);
+    console.log(`    ${chalk.bold('--generate')} - Generates TSV-files with offers`);
+    console.log('\nFor detailed info about command use');
+    console.log(`    ${chalk.bold(`cli.js ${chalk.blue('<command>')} --help`)}`);
   }
 }
-

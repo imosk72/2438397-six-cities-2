@@ -16,6 +16,8 @@ export class CreateUserRequest {
   @Length(6, 12, {message: 'Password length should be from 6 to 12.'})
   @IsString({message: 'Password is required.'})
   public password!: string;
+
+  public avatar?: string;
 }
 
 export class LoginUserRequest {

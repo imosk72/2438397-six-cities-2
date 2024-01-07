@@ -174,6 +174,7 @@ export class UserController extends RestController {
   }
 
   public async uploadAvatar(request: Request, response: Response) {
+    await this.userRepository.updateAvatar(request.user.id, `${request.file?.filename}`);
     this.created(response, {
       filepath: request.file?.path,
     });

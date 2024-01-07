@@ -89,6 +89,16 @@ export class UserRepository implements IUserRepository {
     return model.password;
   }
 
+  public async updateAvatar(id: string, avatar: string): Promise<UserDto | null> {
+    this.logger.info(`Try to update avatar to user ${id}`);
+    const model = await this._getUserModel()
+      .findByIdAndUpdate(id, {
+        avatar: avatar,
+      })
+      .exec();
+    return convertMaybeDbModelToDto(UserDto, model);
+  }
+
   private _getUserModel(): typeof Model {
     if (this.userModel === null) {
       this.userModel = this.dbClient.getConnection().model('User', this.userModelSchema);

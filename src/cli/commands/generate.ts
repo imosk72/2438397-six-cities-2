@@ -1,11 +1,11 @@
 import chalk from 'chalk';
-import {ICliCommand} from '../ICliCommand.js';
-import {FileWriter} from '../../services/fileService.js';
-import {OfferService} from '../../services/offerService.js';
-import {HttpService} from '../../services/httpService.js';
+import { ICliCommand } from '../ICliCommand.js';
+import { FileWriter } from '../../services/fileService.js';
+import { OfferService } from '../../services/offerService.js';
+import { HttpService } from '../../services/httpService.js';
 
 export class GenerateCommand implements ICliCommand {
-  public readonly name = 'generate';
+  public readonly name = '--generate';
 
   public async printHelp() : Promise<void> {
     console.log('NAME:\n    "generate" - Generates test offer data and writes it to file\n');

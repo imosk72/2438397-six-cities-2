@@ -1,5 +1,5 @@
 import got from 'got';
-import {MockData} from '../models/mockData.js';
+import { MockData } from '../models/mockData.js';
 
 export class HttpService {
   public async getMockData(url: string): Promise<MockData> {

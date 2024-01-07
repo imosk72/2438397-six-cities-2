@@ -1,8 +1,8 @@
-import {VersionCommand} from './commands/version.js';
-import {HelpCommand} from './commands/help.js';
-import {CliCommandRegistry} from './cliCommandRegistry.js';
-import {ImportCommand} from './commands/import.js';
-import {GenerateCommand} from './commands/generate.js';
+import { VersionCommand } from './commands/version.js';
+import { HelpCommand } from './commands/help.js';
+import { CliCommandRegistry } from './cliCommandRegistry.js';
+import { ImportCommand } from './commands/import.js';
+import { GenerateCommand } from './commands/generate.js';
 
 export function bootstrapCliRegistry(): CliCommandRegistry {
   const registry = new CliCommandRegistry();

@@ -1,7 +1,7 @@
-import {OfferType} from '../models/offer/offerType.js';
-import {City, Facilities, HousingType, UserLevel} from '../models/enums.js';
-import {MockData} from '../models/mockData.js';
-import {generateRandomInt, getRandomItem} from '../utils/random.js';
+import { OfferType } from '../models/offer/offerType.js';
+import { City, Facilities, HousingType, UserLevel } from '../models/enums.js';
+import { MockData } from '../models/mockData.js';
+import { generateRandomInt, getRandomItem } from '../utils/random.js';
 
 export class OfferService {
   public parseOffer(line: string): OfferType {
@@ -36,7 +36,7 @@ export class OfferService {
       date: new Date(date),
       city: city as unknown as City,
       preview: preview,
-      images: images.split(','),
+      images: images.slice(1, images.length - 1).split(','),
       isPremium: premium as unknown as boolean,
       isFavourite: favorite as unknown as boolean,
       rating: parseFloat(rating),
@@ -44,7 +44,7 @@ export class OfferService {
       roomCount: parseInt(roomCount, 10),
       guestCount: parseInt(guestCount, 10),
       cost: parseInt(cost, 10),
-      facilities: facilities.split(',').map((x) => x as unknown as Facilities),
+      facilities: facilities.slice(1, facilities.length - 1).split(',').map((x) => x as unknown as Facilities),
       author: {
         name: authorName,
         avatar: authorAvatar,
@@ -89,17 +89,17 @@ export class OfferService {
     return [
       offer.title,
       offer.description,
-      offer.date,
+      offer.date.toISOString(),
       offer.city,
       offer.preview,
-      offer.images,
+      `[${offer.images}]`,
       offer.isPremium,
       offer.isFavourite,
       offer.rating,
       offer.housingType,
       offer.roomCount,
       offer.guestCount,
-      offer.facilities,
+      `[${offer.facilities}]`,
       offer.author.name,
       offer.author.avatar,
       offer.author.type,

@@ -7,6 +7,7 @@ export interface IUserRepository extends IEntityExistsRepository {
   findByEmail(email: string): Promise<UserDto | null>;
   addToFavoriteOffer(userId: string, offerId: string): Promise<void>;
   removeFavouriteOffer(userId: string, offerId: string): Promise<void>;
-  getFavourites(userId: string): Promise<string[]>
-  getHashedPassword(userId: string): Promise<string | null>
+  getFavourites(userId: string): Promise<string[]>;
+  getHashedPassword(userId: string): Promise<string | null>;
+  updateAvatar(id: string, avatar: string): Promise<UserDto | null>;
 }
