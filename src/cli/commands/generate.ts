@@ -1,8 +1,8 @@
 import chalk from 'chalk';
-import { ICliCommand } from '../CLI-command-interface';
-import { FileWriter } from '../../services/file-service';
-import { OfferService } from '../../services/offer-service';
-import { HttpService } from '../../services/http-service';
+import { ICliCommand } from '../CLI-command-interface.js';
+import { FileWriter } from '../../services/file-service.js';
+import { OfferService } from '../../services/offer-service.js';
+import { HttpService } from '../../services/http-service.js';
 
 export class GenerateCommand implements ICliCommand {
   public readonly name = '--generate';

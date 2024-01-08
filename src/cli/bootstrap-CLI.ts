@@ -1,6 +1,6 @@
 import { VersionCommand } from './commands/version.js';
 import { HelpCommand } from './commands/help.js';
-import { CliCommandRegistry } from './CLI-command-registry';
+import { CliCommandRegistry } from './CLI-command-registry.js';
 import { ImportCommand } from './commands/import.js';
 import { GenerateCommand } from './commands/generate.js';
 

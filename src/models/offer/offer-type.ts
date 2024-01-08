@@ -1,5 +1,5 @@
 import {City, Facilities, HousingType} from '../enums.js';
-import {UserType} from '../user/user-type';
+import {UserType} from '../user/user-type.js';
 
 export type Coordinates = {
   latitude: number,

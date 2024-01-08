@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import {bootstrapCliRegistry} from './cli/bootstrap-CLI';
+import {bootstrapCliRegistry} from './cli/bootstrap-CLI.js';
 
 const registry = bootstrapCliRegistry();
 

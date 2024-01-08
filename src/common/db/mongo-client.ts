@@ -1,9 +1,9 @@
 import { inject, injectable } from 'inversify';
 import mongoose, { Mongoose } from 'mongoose';
 import { setTimeout } from 'node:timers/promises';
-import { IDbClient } from './db-client-interface';
-import { AppTypes } from '../../application/app-types';
-import { ILogger } from '../logging/logger-interface';
+import { IDbClient } from './db-client-interface.js';
+import { AppTypes } from '../../application/app-types.js';
+import { ILogger } from '../logging/logger-interface.js';
 
 const RETRY_ATTEMPTS = 10;
 const RETRY_TIMEOUT = 5000;

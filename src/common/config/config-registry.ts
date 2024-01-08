@@ -1,8 +1,8 @@
 import { config } from 'dotenv';
 import {inject, injectable} from 'inversify';
 import convict from 'convict';
-import {AppTypes} from '../../application/app-types';
-import {ILogger} from '../logging/logger-interface';
+import {AppTypes} from '../../application/app-types.js';
+import {ILogger} from '../logging/logger-interface.js';
 
 @injectable()
 export class ConfigRegistry {

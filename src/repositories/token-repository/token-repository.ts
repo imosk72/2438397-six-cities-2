@@ -1,10 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { Model, Schema } from 'mongoose';
 
-import { IDbClient } from '../../common/db/db-client-interface';
-import { AppTypes } from '../../application/app-types';
-import { ILogger } from '../../common/logging/logger-interface';
-import { ITokenRepository } from './token-repository-interface';
+import { IDbClient } from '../../common/db/db-client-interface.js';
+import { AppTypes } from '../../application/app-types.js';
+import { ILogger } from '../../common/logging/logger-interface.js';
+import { ITokenRepository } from './token-repository-interface.js';
 
 @injectable()
 export class TokenRepository implements ITokenRepository {

@@ -1,5 +1,5 @@
-import { IEntityExistsRepository } from '../../common/repository/entity-exists-repository-interface';
-import { OfferDto } from '../../models/offer/offer-DTO';
+import { IEntityExistsRepository } from '../../common/repository/entity-exists-repository-interface.js';
+import { OfferDto } from '../../models/offer/offer-DTO.js';
 
 export interface IOfferRepository extends IEntityExistsRepository {
   save(dto: OfferDto): Promise<OfferDto | null>;

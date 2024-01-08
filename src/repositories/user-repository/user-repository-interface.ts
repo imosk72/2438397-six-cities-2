@@ -1,5 +1,5 @@
-import {IEntityExistsRepository} from '../../common/repository/entity-exists-repository-interface';
-import { UserDto } from '../../models/user/user-DTO';
+import {IEntityExistsRepository} from '../../common/repository/entity-exists-repository-interface.js';
+import { UserDto } from '../../models/user/user-DTO.js';
 
 export interface IUserRepository extends IEntityExistsRepository {
   save(dto: UserDto): Promise<UserDto | null>;

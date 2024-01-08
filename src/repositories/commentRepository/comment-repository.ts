@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify';
 import {Model, Schema} from 'mongoose';
 
-import { IDbClient } from '../../common/db/db-client-interface';
-import { CommentDto } from '../../models/comment/comment-DTO';
-import { AppTypes } from '../../application/app-types';
-import { ILogger } from '../../common/logging/logger-interface';
-import { ICommentRepository } from './comment-repository-interface';
-import { convertMaybeDbModelToDto, convertModelsArrayToDto } from '../../utils/type-converters';
+import { IDbClient } from '../../common/db/db-client-interface.js';
+import { CommentDto } from '../../models/comment/comment-DTO.js';
+import { AppTypes } from '../../application/app-types.js';
+import { ILogger } from '../../common/logging/logger-interface.js';
+import { ICommentRepository } from './comment-repository-interface.js';
+import { convertMaybeDbModelToDto, convertModelsArrayToDto } from '../../utils/type-converters.js';
 
 const MAX_COMMENTS_COUNT = 20;
 const SORT_DESC = -1;

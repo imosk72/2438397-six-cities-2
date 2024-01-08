@@ -3,19 +3,19 @@ import mongoose from 'mongoose';
 
 import { StatusCodes } from 'http-status-codes';
 import { Request, Response } from 'express';
-import { RestController } from '../../common/httpServer/controller/rest-controller';
-import { AppTypes } from '../../application/app-types';
-import { HttpMethod } from '../../common/httpServer/HTTP-method';
-import { ILogger } from '../../common/logging/logger-interface';
-import { ICommentRepository } from '../../repositories/commentRepository/comment-repository-interface';
-import { CommentDto } from '../../models/comment/comment-DTO';
-import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validate-DTO';
+import { RestController } from '../../common/httpServer/controller/rest-controller.js';
+import { AppTypes } from '../../application/app-types.js';
+import { HttpMethod } from '../../common/httpServer/HTTP-method.js';
+import { ILogger } from '../../common/logging/logger-interface.js';
+import { ICommentRepository } from '../../repositories/commentRepository/comment-repository-interface.js';
+import { CommentDto } from '../../models/comment/comment-DTO.js';
+import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validate-DTO.js';
 import { PrivateRouteMiddleware } from '../../common/httpServer/middleware/authentication.js';
-import { CreateCommentRequest } from '../../models/comment/comment-requests';
-import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validate-object-id';
-import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/is-document-exists';
-import { IOfferRepository } from '../../repositories/offer-repository/offer-repository-interface';
-import {HttpError} from '../../common/httpServer/exceptions/HTTP-error';
+import { CreateCommentRequest } from '../../models/comment/comment-requests.js';
+import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validate-object-id.js';
+import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/is-document-exists.js';
+import { IOfferRepository } from '../../repositories/offer-repository/offer-repository-interface.js';
+import {HttpError} from '../../common/httpServer/exceptions/HTTP-error.js';
 
 const { Types } = mongoose;
 

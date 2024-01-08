@@ -3,17 +3,17 @@ import express, { Express } from 'express';
 import fileupload from 'express-fileupload';
 import cors from 'cors';
 
-import { ILogger } from '../common/logging/logger-interface';
-import { AppTypes } from './app-types';
-import { ConfigRegistry } from '../common/config/config-registry';
-import { IDbClient } from '../common/db/db-client-interface';
+import { ILogger } from '../common/logging/logger-interface.js';
+import { AppTypes } from './app-types.js';
+import { ConfigRegistry } from '../common/config/config-registry.js';
+import { IDbClient } from '../common/db/db-client-interface.js';
 import { getMongoConnectionUri } from '../utils/db.js';
-import { IExceptionFilter } from '../common/httpServer/exceptions/exception-filter-interface';
-import { UserController } from '../controllers/user/user-controller';
-import { OfferController } from '../controllers/offer/offer-controller';
+import { IExceptionFilter } from '../common/httpServer/exceptions/exception-filter-interface.js';
+import { UserController } from '../controllers/user/user-controller.js';
+import { OfferController } from '../controllers/offer/offer-controller.js';
 import { AuthenticateMiddleware } from '../common/httpServer/middleware/authentication.js';
-import { ITokenRepository } from '../repositories/token-repository/token-repository-interface';
-import { CommentController } from '../controllers/comments/comment-controller';
+import { ITokenRepository } from '../repositories/token-repository/token-repository-interface.js';
+import { CommentController } from '../controllers/comments/comment-controller.js';
 
 @injectable()
 export class Application {

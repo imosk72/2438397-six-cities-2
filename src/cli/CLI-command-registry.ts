@@ -1,4 +1,4 @@
-import { ICliCommand } from './CLI-command-interface';
+import { ICliCommand } from './CLI-command-interface.js';
 
 export class CliCommandRegistry {
   private commands: { [propertyName: string]: ICliCommand } = {};

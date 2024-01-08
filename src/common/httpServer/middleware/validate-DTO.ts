@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { StatusCodes } from 'http-status-codes';
-import {IMiddleware} from './middleware-interface';
+import {IMiddleware} from './middleware-interface.js';
 
 export class ValidateDtoMiddleware implements IMiddleware {
   private readonly dto: ClassConstructor<object>;

@@ -1,8 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import { NextFunction, Request, Response } from 'express';
-import { IMiddleware } from './middleware-interface';
-import { IEntityExistsRepository } from '../../repository/entity-exists-repository-interface';
-import { HttpError } from '../exceptions/HTTP-error';
+import { IMiddleware } from './middleware-interface.js';
+import { IEntityExistsRepository } from '../../repository/entity-exists-repository-interface.js';
+import { HttpError } from '../exceptions/HTTP-error.js';
 
 export class IsDocumentExistsMiddleware implements IMiddleware {
   private readonly repository: IEntityExistsRepository;

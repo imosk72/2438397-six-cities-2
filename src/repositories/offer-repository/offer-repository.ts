@@ -1,12 +1,12 @@
 import { inject, injectable } from 'inversify';
 import { Model, Schema } from 'mongoose';
 
-import {IDbClient} from '../../common/db/db-client-interface';
-import { OfferDto } from '../../models/offer/offer-DTO';
-import { AppTypes } from '../../application/app-types';
-import { ILogger } from '../../common/logging/logger-interface';
-import { IOfferRepository } from './offer-repository-interface';
-import { convertMaybeDbModelToDto, convertModelsArrayToDto } from '../../utils/type-converters';
+import {IDbClient} from '../../common/db/db-client-interface.js';
+import { OfferDto } from '../../models/offer/offer-DTO.js';
+import { AppTypes } from '../../application/app-types.js';
+import { ILogger } from '../../common/logging/logger-interface.js';
+import { IOfferRepository } from './offer-repository-interface.js';
+import { convertMaybeDbModelToDto, convertModelsArrayToDto } from '../../utils/type-converters.js';
 
 const MAX_OFFERS_LIMIT = 20;
 const SORT_DESC = -1;

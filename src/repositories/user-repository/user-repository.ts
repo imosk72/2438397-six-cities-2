@@ -1,15 +1,15 @@
 import { inject, injectable } from 'inversify';
 import { Model, Schema } from 'mongoose';
 
-import { IDbClient } from '../../common/db/db-client-interface';
-import { UserDto } from '../../models/user/user-DTO';
-import { AppTypes } from '../../application/app-types';
-import { IUserRepository } from './user-repository-interface';
-import { ILogger } from '../../common/logging/logger-interface';
-import { ConfigRegistry } from '../../common/config/config-registry';
+import { IDbClient } from '../../common/db/db-client-interface.js';
+import { UserDto } from '../../models/user/user-DTO.js';
+import { AppTypes } from '../../application/app-types.js';
+import { IUserRepository } from './user-repository-interface.js';
+import { ILogger } from '../../common/logging/logger-interface.js';
+import { ConfigRegistry } from '../../common/config/config-registry.js';
 import { createSHA256Hash } from '../../utils/hashing.js';
-import { convertMaybeDbModelToDto } from '../../utils/type-converters';
-import { CreateUserRequest } from '../../models/user/user-requests';
+import { convertMaybeDbModelToDto } from '../../utils/type-converters.js';
+import { CreateUserRequest } from '../../models/user/user-requests.js';
 
 @injectable()
 export class UserRepository implements IUserRepository {

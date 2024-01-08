@@ -2,19 +2,19 @@ import { inject, injectable } from 'inversify';
 import { Request, Response} from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { RestController } from '../../common/httpServer/controller/rest-controller';
-import { AppTypes } from '../../application/app-types';
-import { HttpMethod } from '../../common/httpServer/HTTP-method';
-import { ILogger } from '../../common/logging/logger-interface';
-import { HttpError } from '../../common/httpServer/exceptions/HTTP-error';
-import { OfferDto } from '../../models/offer/offer-DTO';
-import { IOfferRepository } from '../../repositories/offer-repository/offer-repository-interface';
-import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validate-DTO';
-import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validate-object-id';
-import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/is-document-exists';
+import { RestController } from '../../common/httpServer/controller/rest-controller.js';
+import { AppTypes } from '../../application/app-types.js';
+import { HttpMethod } from '../../common/httpServer/HTTP-method.js';
+import { ILogger } from '../../common/logging/logger-interface.js';
+import { HttpError } from '../../common/httpServer/exceptions/HTTP-error.js';
+import { OfferDto } from '../../models/offer/offer-DTO.js';
+import { IOfferRepository } from '../../repositories/offer-repository/offer-repository-interface.js';
+import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validate-DTO.js';
+import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validate-object-id.js';
+import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/is-document-exists.js';
 import { PrivateRouteMiddleware } from '../../common/httpServer/middleware/authentication.js';
-import { IUserRepository } from '../../repositories/user-repository/user-repository-interface';
-import { CreateOfferRequest } from '../../models/offer/offer-requests';
+import { IUserRepository } from '../../repositories/user-repository/user-repository-interface.js';
+import { CreateOfferRequest } from '../../models/offer/offer-requests.js';
 
 @injectable()
 export class OfferController extends RestController {
