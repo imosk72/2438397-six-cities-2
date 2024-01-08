@@ -3,12 +3,13 @@ import { inject, injectable } from 'inversify';
 import convict from 'convict';
 import { AppTypes } from '../../application/app-types.js';
 import { ILogger } from '../logging/logger-interface.js';
+import { AppConfigType } from '../../application/app-config-schema.js';
 
 @injectable()
 export class ConfigRegistry {
-  private readonly config: convict.Config<any>;
+  private readonly config: AppConfigType;
 
-  constructor(@inject(AppTypes.LoggerInterface) logger: ILogger, schema: convict.Config<any>) {
+  constructor(@inject(AppTypes.LoggerInterface) logger: ILogger, schema: convict.Config<AppConfigType>) {
     const parsedOutput = config();
 
     if (parsedOutput.error) {
@@ -19,11 +20,10 @@ export class ConfigRegistry {
     schema.load({});
     schema.validate({ allowed: 'strict' });
 
-    this.config = schema;
+    this.config = schema.getProperties();
   }
 
-  public get(key: string): any {
-    // @ts-ignore
-    return this.config.get(key);
+  public get<T extends keyof AppConfigType>(key: T): AppConfigType[T] {
+    return this.config[key];
   }
 }

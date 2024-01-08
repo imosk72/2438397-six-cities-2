@@ -3,7 +3,20 @@ import validator from 'convict-format-with-validator';
 
 convict.addFormats(validator);
 
-export const applicationConfigSchema = convict({
+export type AppConfigType = {
+  APP_PORT: number;
+  DB_HOST: string;
+  DB_PORT: string;
+  DB_NAME: string;
+  DB_USER: string;
+  DB_PASSWORD: string;
+  SALT: string;
+  DEFAULT_PASSWORD: string;
+  UPLOAD_DIRECTORY: string;
+  JWT_SECRET: string;
+};
+
+export const applicationConfigSchema = convict<AppConfigType>({
   APP_PORT: {
     doc: 'Application port for incoming connections',
     format: 'port',
