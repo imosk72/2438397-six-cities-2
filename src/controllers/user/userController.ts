@@ -95,6 +95,14 @@ export class UserController extends RestController {
         new UploadFileMiddleware(this.config.get('UPLOAD_DIRECTORY'), 'avatar'),
       ],
     });
+    this.addRoute({
+      path: '/me',
+      method: HttpMethod.Get,
+      handler: this.getUserInfo,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+      ],
+    });
   }
 
   public async register(
@@ -164,7 +172,10 @@ export class UserController extends RestController {
   }
 
   public async addFavourite(request: Request, response: Response): Promise<void> {
-    await this.userRepository.addToFavoriteOffer(request.user.id, request.params.offerId);
+    const favouriteOffers = await this.userRepository.getFavourites(request.user.id);
+    if (!favouriteOffers.includes(request.params.offerId)) {
+      await this.userRepository.addToFavoriteOffer(request.user.id, request.params.offerId);
+    }
     this.noContent(response);
   }
 
@@ -178,5 +189,10 @@ export class UserController extends RestController {
     this.created(response, {
       filepath: request.file?.path,
     });
+  }
+
+  public async getUserInfo(request: Request, response: Response) {
+    const user = await this.userRepository.findById(request.user.id);
+    return this.ok(response, user);
   }
 }
