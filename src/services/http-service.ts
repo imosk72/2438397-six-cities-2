@@ -4,7 +4,7 @@ import { MockData } from '../models/mock-data.js';
 export class HttpService {
   public async getMockData(url: string): Promise<MockData> {
     try {
-      return await got.get(url).json();
+      return JSON.parse((await got.get(url)).body);
     } catch {
       return {
         titles: ['name1', 'name2'],

@@ -1,14 +1,14 @@
 import { config } from 'dotenv';
-import {inject, injectable} from 'inversify';
+import { inject, injectable } from 'inversify';
 import convict from 'convict';
-import {AppTypes} from '../../application/app-types.js';
-import {ILogger} from '../logging/logger-interface.js';
+import { AppTypes } from '../../application/app-types.js';
+import { ILogger } from '../logging/logger-interface.js';
 
 @injectable()
 export class ConfigRegistry {
-  private readonly config: convict.Format;
+  private readonly config: convict.Config<any>;
 
-  constructor(@inject(AppTypes.LoggerInterface) logger: ILogger, schema: convict.Format) {
+  constructor(@inject(AppTypes.LoggerInterface) logger: ILogger, schema: convict.Config<any>) {
     const parsedOutput = config();
 
     if (parsedOutput.error) {
@@ -19,10 +19,11 @@ export class ConfigRegistry {
     schema.load({});
     schema.validate({ allowed: 'strict' });
 
-    this.config = schema.getProperties();
+    this.config = schema;
   }
 
   public get(key: string): any {
-    return this.config[key];
+    // @ts-ignore
+    return this.config.get(key);
   }
 }

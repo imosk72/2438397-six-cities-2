@@ -18,6 +18,11 @@
     "ts": "ts-node"
   },
   "devDependencies": {
+    "@types/convict": "^6.1.6",
+    "@types/convict-format-with-validator": "^6.0.5",
+    "@types/cors": "^2.8.17",
+    "@types/express-fileupload": "^1.4.4",
+    "@types/got": "^9.6.12",
     "@types/node": "18.16.3",
     "@typescript-eslint/eslint-plugin": "5.46.0",
     "@typescript-eslint/parser": "5.46.0",
