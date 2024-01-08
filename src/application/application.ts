@@ -1,6 +1,8 @@
 import { inject, injectable } from 'inversify';
 import express, { Express } from 'express';
 import fileupload from 'express-fileupload';
+import cors from 'cors';
+
 import { ILogger } from '../common/logging/ILogger.js';
 import { AppTypes } from './appTypes.js';
 import { ConfigRegistry } from '../common/config/configRegistry.js';
@@ -88,6 +90,8 @@ export class Application {
 
     this.server.use(express.json());
     this.server.use(fileupload());
+    this.server.use(cors());
+
     const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'), this.tokenRepository);
     this.server.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
 
