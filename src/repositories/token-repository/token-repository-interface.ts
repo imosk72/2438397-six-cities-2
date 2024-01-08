@@ -1,4 +1,4 @@
-import {IEntityExistsRepository} from '../../common/repository/IEntityExistsRepository.js';
+import {IEntityExistsRepository} from '../../common/repository/entity-exists-repository-interface';
 
 export interface ITokenRepository extends IEntityExistsRepository {
   save(dto: {token: string, userId: string}): Promise<void>;

@@ -1,6 +1,6 @@
-import { OfferType } from '../models/offer/offerType.js';
+import { OfferType } from '../models/offer/offer-type';
 import { City, Facilities, HousingType, UserLevel } from '../models/enums.js';
-import { MockData } from '../models/mockData.js';
+import { MockData } from '../models/mock-data';
 import { generateRandomInt, getRandomItem } from '../utils/random.js';
 
 export class OfferService {

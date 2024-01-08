@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import { jwtVerify } from 'jose';
 import { StatusCodes } from 'http-status-codes';
 import { createSecretKey } from 'node:crypto';
-import { IMiddleware } from './IMiddleware.js';
-import { HttpError } from '../exceptions/httpError.js';
-import { JWT_ALGORITHM } from '../../../utils/jwt.js';
-import { ITokenRepository } from '../../../repositories/tokenRepository/ITokenRepository.js';
+import { IMiddleware } from './middleware-interface';
+import { HttpError } from '../exceptions/HTTP-error';
+import { JWT_ALGORITHM } from '../../../utils/JWT';
+import { ITokenRepository } from '../../../repositories/token-repository/token-repository-interface';
 
 export class AuthenticateMiddleware implements IMiddleware {
   private readonly jwtSecret: string;

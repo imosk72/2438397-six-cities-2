@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import pkg from '../../../package.json';
 
-import { ICliCommand } from '../ICliCommand.js';
+import { ICliCommand } from '../CLI-command-interface';
 
 export class HelpCommand implements ICliCommand {
   public readonly name = '--help';

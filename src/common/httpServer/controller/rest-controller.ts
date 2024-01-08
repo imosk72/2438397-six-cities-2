@@ -2,10 +2,10 @@ import {inject, injectable} from 'inversify';
 import { StatusCodes } from 'http-status-codes';
 import asyncHandler from 'express-async-handler';
 import { Response, Router } from 'express';
-import { IController } from './IController.js';
+import { IController } from './controller-interface';
 import { Route } from '../route.js';
-import { ILogger } from '../../logging/ILogger.js';
-import { AppTypes } from '../../../application/appTypes.js';
+import { ILogger } from '../../logging/logger-interface';
+import { AppTypes } from '../../../application/app-types';
 
 const DEFAULT_CONTENT_TYPE = 'application/json';
 

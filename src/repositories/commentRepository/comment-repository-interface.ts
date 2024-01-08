@@ -1,5 +1,5 @@
-import { IEntityExistsRepository } from '../../common/repository/IEntityExistsRepository.js';
-import { CommentDto } from '../../models/comment/commentDto.js';
+import { IEntityExistsRepository } from '../../common/repository/entity-exists-repository-interface';
+import { CommentDto } from '../../models/comment/comment-DTO';
 
 export interface ICommentRepository extends IEntityExistsRepository {
   save(dto: CommentDto): Promise<CommentDto | null>;

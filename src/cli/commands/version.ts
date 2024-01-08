@@ -1,6 +1,6 @@
 import pkg from '../../../package.json';
 
-import { ICliCommand } from '../ICliCommand.js';
+import { ICliCommand } from '../CLI-command-interface';
 
 export class VersionCommand implements ICliCommand {
   public readonly name = '--version';

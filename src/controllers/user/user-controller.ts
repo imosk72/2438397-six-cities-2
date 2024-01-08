@@ -3,24 +3,24 @@ import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { plainToInstance } from 'class-transformer';
 
-import { RestController } from '../../common/httpServer/controller/restController.js';
-import { AppTypes } from '../../application/appTypes.js';
-import { HttpMethod } from '../../common/httpServer/httpMethod.js';
-import { ILogger } from '../../common/logging/ILogger.js';
-import { HttpError } from '../../common/httpServer/exceptions/httpError.js';
-import { IUserRepository } from '../../repositories/userRepository/IUserRepository.js';
-import { UserDto } from '../../models/user/userDto.js';
-import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/isDocumentExists.js';
-import { IOfferRepository } from '../../repositories/offerRepository/IOfferRepository.js';
-import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validateDto.js';
-import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validateObjectId.js';
-import { UploadFileMiddleware } from '../../common/httpServer/middleware/uploadFile.js';
-import { ConfigRegistry } from '../../common/config/configRegistry.js';
+import { RestController } from '../../common/httpServer/controller/rest-controller';
+import { AppTypes } from '../../application/app-types';
+import { HttpMethod } from '../../common/httpServer/HTTP-method';
+import { ILogger } from '../../common/logging/logger-interface';
+import { HttpError } from '../../common/httpServer/exceptions/HTTP-error';
+import { IUserRepository } from '../../repositories/user-repository/user-repository-interface';
+import { UserDto } from '../../models/user/user-DTO';
+import { IsDocumentExistsMiddleware } from '../../common/httpServer/middleware/is-document-exists';
+import { IOfferRepository } from '../../repositories/offer-repository/offer-repository-interface';
+import { ValidateDtoMiddleware } from '../../common/httpServer/middleware/validate-DTO';
+import { ValidateObjectIdMiddleware } from '../../common/httpServer/middleware/validate-object-id';
+import { UploadFileMiddleware } from '../../common/httpServer/middleware/upload-file';
+import { ConfigRegistry } from '../../common/config/config-registry';
 import { PrivateRouteMiddleware } from '../../common/httpServer/middleware/authentication.js';
-import { CreateUserRequest, LoginUserRequest } from '../../models/user/userRequests.js';
+import { CreateUserRequest, LoginUserRequest } from '../../models/user/user-requests';
 import { createSHA256Hash } from '../../utils/hashing.js';
-import { ITokenRepository } from '../../repositories/tokenRepository/ITokenRepository.js';
-import { createJWT, JWT_ALGORITHM } from '../../utils/jwt.js';
+import { ITokenRepository } from '../../repositories/token-repository/token-repository-interface';
+import { createJWT, JWT_ALGORITHM } from '../../utils/JWT';
 
 @injectable()
 export class UserController extends RestController {

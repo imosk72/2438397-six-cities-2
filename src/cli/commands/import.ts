@@ -1,15 +1,15 @@
 import chalk from 'chalk';
-import { ICliCommand } from '../ICliCommand.js';
-import { FileReader } from '../../services/fileService.js';
-import { OfferService } from '../../services/offerService.js';
-import { PinoLogger } from '../../common/logging/pinoLogger.js';
-import { ConfigRegistry } from '../../common/config/configRegistry.js';
-import { MongoClient } from '../../common/db/mongoClient.js';
-import { UserRepository } from '../../repositories/userRepository/UserRepository.js';
-import { OfferRepository } from '../../repositories/offerRepository/OfferRepository.js';
-import { OfferModelSchema } from '../../models/offer/offerModelSchema.js';
-import { UserModelSchema } from '../../models/user/userModelSchema.js';
-import { applicationConfigSchema } from '../../application/appConfigSchema.js';
+import { ICliCommand } from '../CLI-command-interface';
+import { FileReader } from '../../services/file-service';
+import { OfferService } from '../../services/offer-service';
+import { PinoLogger } from '../../common/logging/pino-logger';
+import { ConfigRegistry } from '../../common/config/config-registry';
+import { MongoClient } from '../../common/db/mongo-client';
+import { UserRepository } from '../../repositories/user-repository/user-repository';
+import { OfferRepository } from '../../repositories/offer-repository/offer-repository';
+import { OfferModelSchema } from '../../models/offer/offer-model-schema';
+import { UserModelSchema } from '../../models/user/user-model-schema';
+import { applicationConfigSchema } from '../../application/app-config-schema';
 import { getMongoConnectionUri } from '../../utils/db.js';
 import { UserLevel } from '../../models/enums.js';
 
